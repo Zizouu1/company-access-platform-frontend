@@ -12,7 +12,7 @@ export default function Visiteur() {
     id: "",
     fullname: "",
     matriculeV: "",
-    typeV: "client",
+    typeV: "",
     aQui: "",
   });
 
@@ -34,7 +34,7 @@ export default function Visiteur() {
         id: "",
         fullname: "",
         matriculeV: "",
-        typeV: "client",
+        typeV: "",
         aQui: "",
       });
     } catch (err) {
