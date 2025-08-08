@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./login/Login";
+import PrivateRoute from "./login/PrivateRoute";
+import SecurityDashboard from "./security/SecurityDashboard";
+import HRDashboard from "./hr/HrDashboard";
+import AdminDashboard from "./admin/AdminDashboard";
+import Visiteur from "./security/Visiteur";
+import Retard from "./security/Retard";
+import Administrateur from "./security/Administrateur";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route element={<PrivateRoute role="security" />}>
+          <Route path="/security" element={<SecurityDashboard />} />
+          <Route path="/visiteur" element={<Visiteur />} />
+          <Route path="/retard" element={<Retard />} />
+          <Route path="/administrateur" element={<Administrateur />} />
+        </Route>
+        <Route element={<PrivateRoute role="hr" />}>
+          <Route path="/hr" element={<HRDashboard />} />
+        </Route>
+        <Route element={<PrivateRoute role="admin" />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
