@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import styles from "./form.module.css";
@@ -18,10 +18,56 @@ export default function Administrateur() {
 
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    if (!form.id) {
+      setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
+      setMessage("");
+      return;
+    }
+
+    const fetchEmployee = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/employees/${form.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const emp = res.data;
+        setForm((prev) => ({
+          ...prev,
+          nom: emp.nom,
+          prenom: emp.prenom,
+          site: emp.site,
+        }));
+        setMessage("");
+      } catch {
+        setMessage("Employé introuvable");
+        setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
+      }
+    };
+
+    fetchEmployee();
+  }, [form.id, token]);
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    if (!form.id || !form.dateR || !form.time) {
+      setMessage(
+        "Veuillez remplir les champs obligatoires (Matricule, Date, Heure)."
+      );
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:3000/follow-administrator", form, {
+      const payload = {
+        id: form.id,
+        dateR: form.dateR,
+        time: form.time,
+        site: form.site,
+      };
+      await axios.post("http://localhost:3000/follow-administrator", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           role: "security",

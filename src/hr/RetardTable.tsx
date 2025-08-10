@@ -108,7 +108,7 @@ export default function RetardTable() {
     const csvData = filtered.map((r: Retard) => ({
       "Date de retard": r.dateR,
       "Heure d'arrivée": r.time,
-      "Numéro carte d'identité": r.id,
+      Matricule: r.id,
       Nom: r.nom,
       Prénom: r.prenom,
       Site: r.site,
@@ -154,7 +154,7 @@ export default function RetardTable() {
         />
         <input
           type="text"
-          placeholder="Numéro carte d'identité"
+          placeholder="Matricule"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
@@ -192,7 +192,7 @@ export default function RetardTable() {
             <tr>
               <th>Date de retard</th>
               <th>Heure d'arrivée</th>
-              <th>Numéro carte d'identité</th>
+              <th>Matricule</th>
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>

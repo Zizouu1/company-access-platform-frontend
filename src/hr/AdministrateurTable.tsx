@@ -103,7 +103,7 @@ export default function AdministrateurTable() {
     const csvData = filtered.map((a: Admin) => ({
       "Date de retard": a.dateR,
       "Heure d'arrivée": a.time,
-      "Numéro carte d'identité": a.id,
+      Matricule: a.id,
       Nom: a.nom,
       Prénom: a.prenom,
       Site: a.site,
@@ -148,7 +148,7 @@ export default function AdministrateurTable() {
         />
         <input
           type="text"
-          placeholder="Numéro carte d'identité"
+          placeholder="Matricule"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
@@ -180,7 +180,7 @@ export default function AdministrateurTable() {
             <tr>
               <th>Date de retard</th>
               <th>Heure d'arrivée</th>
-              <th>Numéro carte d'identité</th>
+              <th>Matricule</th>
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>
