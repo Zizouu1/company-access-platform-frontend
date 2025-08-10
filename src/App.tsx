@@ -10,9 +10,13 @@ import Administrateur from "./security/Administrateur";
 import RetardTable from "./hr/RetardTable";
 import AdministrateurTable from "./hr/AdministrateurTable";
 import VisiteurTable from "./hr/VisiteurTable";
-import ModifierSupprimer from "./admin/ModifierSupprimer";
-import GestionUtilisateurs from "./admin/GestionUtilisateurs";
-import GestionSalaries from "./admin/GestionSalaries";
+import ModifierSupprimer from "./admin/ModifierSupprimer/ModifierSupprimer";
+import GestionUtilisateurs from "./admin/GestionUtilisateur/GestionUtilisateurs";
+import GestionSalaries from "./admin/GestionSalarie/GestionSalaries";
+import AddUser from "./admin/GestionUtilisateur/UpdateUser";
+import UpdateUser from "./admin/GestionUtilisateur/AddUser";
+import AddSalarie from "./admin/GestionSalarie/AddSalarie";
+import UpdateSalarie from "./admin/GestionSalarie/UpdateSalarie";
 
 function App() {
   return (
@@ -42,6 +46,10 @@ function App() {
             element={<GestionUtilisateurs />}
           />
           <Route path="/GestionSalaries" element={<GestionSalaries />} />
+          <Route path="/AjouterUtilisateur" element={<AddUser />} />
+          <Route path="/ModifierUtilisateur" element={<UpdateUser />} />
+          <Route path="/AjouterSalaries" element={<AddSalarie />} />
+          <Route path="/ModifierSalaries" element={<UpdateSalarie />} />
         </Route>
       </Routes>
     </BrowserRouter>
