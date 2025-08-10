@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./HrDash.module.css";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import styles from "./Table.module.css";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
-export default function HrDashboard() {
+export default function VisitorTable() {
   const [visitors, setVisitors] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [searchName, setSearchName] = useState("");
@@ -29,7 +28,8 @@ export default function HrDashboard() {
     matriculeV: string;
     typeV: string;
     aQui: string;
-    date: string;
+    dateA: string;
+    time: string;
   }
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function HrDashboard() {
         });
         const visitorsWithDates = res.data.map((v: Visitor) => ({
           ...v,
-          date: new Date(v.date),
+          date: new Date(v.dateA),
         }));
 
         setVisitors(visitorsWithDates);
@@ -90,7 +90,7 @@ export default function HrDashboard() {
       const end = new Date(endDate);
 
       filteredList = filteredList.filter((v: Visitor) => {
-        const timeIn = new Date(v.date);
+        const timeIn = new Date(`${v.dateA}T${v.time}`);
         return timeIn >= start && timeIn <= end;
       });
     }
@@ -109,7 +109,8 @@ export default function HrDashboard() {
 
   const handleExport = () => {
     const csvData = filtered.map((v: Visitor) => ({
-      "Date et heure d'arrivée": new Date(v.date).toLocaleString(),
+      "Date d'arrivée": v.dateA,
+      "Heure d'arrivée": v.time,
       "Numéro carte d'identité": v.id,
       "Nom et prénom": v.fullname,
       "Matricule voiture": v.matriculeV,
@@ -118,13 +119,14 @@ export default function HrDashboard() {
     }));
 
     const csvContent =
-      "data:text/csv;charset=utf-8," +
+      "\uFEFF" +
       [
         Object.keys(csvData[0]).join(","),
         ...csvData.map((row) => Object.values(row).join(",")),
       ].join("\n");
 
-    const encodedUri = encodeURI(csvContent);
+    const encodedUri =
+      "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "visiteurs.csv");
@@ -136,6 +138,9 @@ export default function HrDashboard() {
   return (
     <div className={styles["hr-container"]}>
       <h2 className={styles["hr-title"]}>Liste des visiteurs</h2>
+      <Link to="/hr" className={styles["back-link"]}>
+        Retour
+      </Link>
 
       <div className={styles["filters"]}>
         <input
@@ -186,7 +191,8 @@ export default function HrDashboard() {
         <table className={styles["visitor-table"]}>
           <thead>
             <tr>
-              <th>Date et heure d'arrivé</th>
+              <th>Date d'arrivé</th>
+              <th>Heure d'arrivé</th>
               <th>Numèro carte d'identité</th>
               <th>Nom et prénom</th>
               <th>Matricule voiture</th>
@@ -197,7 +203,8 @@ export default function HrDashboard() {
           <tbody>
             {filtered.map((v: Visitor) => (
               <tr key={v.id}>
-                <td>{new Date(v.date).toLocaleString()}</td>
+                <td>{v.dateA}</td>
+                <td>{v.time}</td>
                 <td>{v.id}</td>
                 <td>{v.fullname}</td>
                 <td>{v.matriculeV}</td>

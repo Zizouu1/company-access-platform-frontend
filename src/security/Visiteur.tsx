@@ -8,7 +8,8 @@ export default function Visiteur() {
   const token = location.state?.token;
 
   const [form, setForm] = useState({
-    date: "",
+    dateA: "",
+    time: "",
     id: "",
     fullname: "",
     matriculeV: "",
@@ -30,7 +31,8 @@ export default function Visiteur() {
 
       setMessage("Visiteur ajouté!");
       setForm({
-        date: "",
+        dateA: "",
+        time: "",
         id: "",
         fullname: "",
         matriculeV: "",
@@ -61,13 +63,22 @@ export default function Visiteur() {
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleSubmit}>
           <div className={styles["input-group"]}>
-            <label>Date et heure d'arrivé</label>
+            <label>Date d'arrivé</label>
             <input
-              type="datetime-local"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              type="date"
+              value={form.dateA}
+              onChange={(e) => setForm({ ...form, dateA: e.target.value })}
             />
           </div>
+          <div className={styles["input-group"]}>
+            <label>Heure d'arrivé</label>
+            <input
+              type="time"
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+            />
+          </div>
+
           <div className={styles["input-group"]}>
             <label>Numèro carte d'identité</label>
             <input

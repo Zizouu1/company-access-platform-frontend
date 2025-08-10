@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Logout from "../login/Logout";
 
 export default function SecurityDashboard() {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export default function SecurityDashboard() {
       <button onClick={Visiteur}>Visiteur</button>
       <button onClick={Administrateur}>Suivi Administrateur</button>
       <button onClick={Retard}>Retard</button>
+      <Logout />
     </div>
   );
 }

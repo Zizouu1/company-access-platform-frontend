@@ -121,7 +121,7 @@ export default function Retard() {
             <input
               type="text"
               placeholder="service..."
-              value={form.site}
+              value={form.service}
               onChange={(e) => setForm({ ...form, service: e.target.value })}
             />
           </div>

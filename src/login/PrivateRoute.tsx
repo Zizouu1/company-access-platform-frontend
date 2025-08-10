@@ -7,7 +7,6 @@ const getauth = () => {
 
 export default function PrivateRoute({ role }: { role: string }) {
   const auth = getauth();
-  console.log("auth:", auth);
 
   return !auth?.token ? (
     <Navigate to="/" replace />
