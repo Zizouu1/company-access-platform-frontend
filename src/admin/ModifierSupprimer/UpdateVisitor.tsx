@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import styles from "./form.module.css";
 
-export default function Visiteur() {
+export default function UpdateVisitor() {
   const location = useLocation();
   const token = location.state?.token;
+  const { id } = useParams();
 
   const [form, setForm] = useState({
     dateA: "",
@@ -18,18 +19,44 @@ export default function Visiteur() {
   });
 
   const [message, setMessage] = useState("");
+  useEffect(() => {
+    if (!token || !id) return;
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/visitor-manager/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}`, role: "admin" },
+          }
+        );
+        setForm({
+          dateA: res.data.dateA || "",
+          time: res.data.time || "",
+          id: res.data.id || "",
+          fullname: res.data.fullname || "",
+          matriculeV: res.data.matriculeV || "",
+          typeV: res.data.typeV || "",
+          aQui: res.data.aQui || "",
+        });
+        setMessage("");
+      } catch {
+        setMessage("Erreur lors du chargement des données");
+      }
+    };
+    fetchData();
+  }, [id, token]);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/visitor-manager", form, {
+      await axios.patch("http://localhost:3000/visitor-manager", form, {
         headers: {
           Authorization: `Bearer ${token}`,
-          role: "security",
+          role: "admin",
         },
       });
 
-      setMessage("Visiteur ajouté!");
+      setMessage("Visiteur modifié avec succès!");
       setForm({
         dateA: "",
         time: "",
@@ -54,7 +81,7 @@ export default function Visiteur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/security" className={styles["back-link"]}>
+      <Link to="/modifierVisiteur" className={styles["back-link"]}>
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -126,7 +153,7 @@ export default function Visiteur() {
           </div>
 
           <button className={styles["submit-button"]} type="submit">
-            Submit
+            Mettre à jour
           </button>
         </form>
       </div>

@@ -134,36 +134,37 @@ export default function Administrateur() {
             />
           </div>
           <div className={styles["input-group"]}>
-            <label>nom</label>
+            <label>Nom</label>
             <input
               type="text"
-              placeholder="nom..."
               value={form.nom}
-              onChange={(e) => setForm({ ...form, nom: e.target.value })}
+              readOnly
+              className={styles["readonly-input"]}
             />
-          </div>
-          <div className={styles["input-group"]}>
-            <label>prenom</label>
-            <input
-              type="text"
-              placeholder="prenom..."
-              value={form.prenom}
-              onChange={(e) => setForm({ ...form, prenom: e.target.value })}
-            />
-          </div>
-          <div className={styles["input-group"]}>
-            <label>site</label>
-            <select
-              value={form.site}
-              onChange={(e) => setForm({ ...form, site: e.target.value })}
-            >
-              <option value="Pec">Pec</option>
-              <option value="Pec-ac">Pec-ac</option>
-              <option value="Pec-plus">Pec-plus</option>
-            </select>
           </div>
 
-          <button className={styles["submit-button"]}>Submit</button>
+          <div className={styles["input-group"]}>
+            <label>Prénom</label>
+            <input
+              type="text"
+              value={form.prenom}
+              readOnly
+              className={styles["readonly-input"]}
+            />
+          </div>
+          <div className={styles["input-group"]}>
+            <label>Site</label>
+            <input
+              type="text"
+              value={form.site}
+              readOnly
+              className={styles["readonly-input"]}
+            />
+          </div>
+
+          <button className={styles["submit-button"]} type="submit">
+            Submit
+          </button>
         </form>
       </div>
     </div>

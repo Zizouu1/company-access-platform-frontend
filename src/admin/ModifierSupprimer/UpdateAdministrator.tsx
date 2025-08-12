@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import styles from "./form.module.css";
 
-export default function Retard() {
+export default function UpdateAdministrateur() {
   const location = useLocation();
   const token = location.state?.token;
+  const { id } = useParams();
 
   const [form, setForm] = useState({
     dateR: "",
@@ -14,15 +15,39 @@ export default function Retard() {
     nom: "",
     prenom: "",
     site: "",
-    service: "",
   });
 
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    if (!id) return;
+    const fetchRecord = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/follow-administrator/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const record = res.data;
+        setForm({
+          dateR: record.dateR,
+          time: record.time,
+          id: record.id,
+          nom: record.nom,
+          prenom: record.prenom,
+          site: record.site,
+        });
+      } catch {
+        setMessage("Enregistrement introuvable");
+      }
+    };
+    fetchRecord();
+  }, [id, token]);
+
+  useEffect(() => {
     if (!form.id) {
       setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
-      setMessage("");
       return;
     }
 
@@ -31,7 +56,7 @@ export default function Retard() {
         const res = await axios.get(
           `http://localhost:3000/employees/${form.id}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}`, role: "admin" },
           }
         );
         const emp = res.data;
@@ -67,31 +92,21 @@ export default function Retard() {
         dateR: form.dateR,
         time: form.time,
         site: form.site,
-        service: form.service,
       };
+      await axios.patch(
+        `http://localhost:3000/follow-administrator/${id}`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}`, role: "admin" },
+        }
+      );
 
-      await axios.post("http://localhost:3000/delay-pec", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          role: "security",
-        },
-      });
-
-      setMessage("Ajouté avec succès!");
-      setForm({
-        dateR: "",
-        time: "",
-        id: "",
-        nom: "",
-        prenom: "",
-        site: "",
-        service: "",
-      });
+      setMessage("Mise à jour réussie !");
     } catch (err) {
       const erreur = err as AxiosError;
       setMessage(
-        (erreur.response?.data as { error?: string })?.error ||
-          "Erreur, veuillez réessayer"
+        (erreur.response?.data as { error: string })?.error ||
+          "Erreur , veuillez réessayer"
       );
     }
   };
@@ -102,26 +117,41 @@ export default function Retard() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/security" className={styles["back-link"]}>
+      <Link to="/modifierAdministrateur" className={styles["back-link"]}>
         Retour
       </Link>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un retard</h2>
+        <h2 className={styles["form-title"]}>
+          Mettre à jour un retard d'administrateur
+        </h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
-
         <form onSubmit={handleSubmit}>
+          <div className={styles["input-group"]}>
+            <label>Date de retard</label>
+            <input
+              type="date"
+              value={form.dateR}
+              onChange={(e) => setForm({ ...form, dateR: e.target.value })}
+            />
+          </div>
+          <div className={styles["input-group"]}>
+            <label>Heure d'arrivée</label>
+            <input
+              type="time"
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+            />
+          </div>
           <div className={styles["input-group"]}>
             <label>Matricule</label>
             <input
               type="text"
               placeholder="Matricule..."
               value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value.trim() })}
-              required
+              onChange={(e) => setForm({ ...form, id: e.target.value })}
             />
           </div>
-
           <div className={styles["input-group"]}>
             <label>Nom</label>
             <input
@@ -141,7 +171,6 @@ export default function Retard() {
               className={styles["readonly-input"]}
             />
           </div>
-
           <div className={styles["input-group"]}>
             <label>Site</label>
             <input
@@ -152,40 +181,7 @@ export default function Retard() {
             />
           </div>
 
-          <div className={styles["input-group"]}>
-            <label>Date de retard</label>
-            <input
-              type="date"
-              value={form.dateR}
-              onChange={(e) => setForm({ ...form, dateR: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Heure d'arrivée</label>
-            <input
-              type="time"
-              value={form.time}
-              onChange={(e) => setForm({ ...form, time: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Service</label>
-            <input
-              type="text"
-              placeholder="Service..."
-              value={form.service}
-              readOnly
-              onChange={(e) => setForm({ ...form, service: e.target.value })}
-            />
-          </div>
-
-          <button className={styles["submit-button"]} type="submit">
-            Submit
-          </button>
+          <button className={styles["submit-button"]}>Mettre à jour</button>
         </form>
       </div>
     </div>

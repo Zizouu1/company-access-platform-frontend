@@ -104,7 +104,7 @@ export default function DelayAdmin() {
   ]);
 
   const handleEdit = (id: string) => {
-    navigate(`/ModifierDelay/${id}`, { state: { token } });
+    navigate(`/UpdateDelay/${id}`, { state: { token } });
   };
   const handleDelete = (id: string) => {
     axios

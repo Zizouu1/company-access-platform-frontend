@@ -8,7 +8,9 @@ export default function ModifierSupprimer() {
     const auth = localStorage.getItem("auth");
     if (auth !== null) {
       const parsedAuth = JSON.parse(auth);
-      navigate("/modifierVisiteur", { state: { token: parsedAuth.token } });
+      navigate("/modifierSupprimerVisiteur", {
+        state: { token: parsedAuth.token },
+      });
     }
   };
 
@@ -16,7 +18,7 @@ export default function ModifierSupprimer() {
     const auth = localStorage.getItem("auth");
     if (auth !== null) {
       const parsedAuth = JSON.parse(auth);
-      navigate("/modifierAdministrateur", {
+      navigate("/modifierSupprimerAdministrateur", {
         state: { token: parsedAuth.token },
       });
     }
@@ -26,7 +28,9 @@ export default function ModifierSupprimer() {
     const auth = localStorage.getItem("auth");
     if (auth !== null) {
       const parsedAuth = JSON.parse(auth);
-      navigate("/modifierRetard", { state: { token: parsedAuth.token } });
+      navigate("/modifierSupprimerRetard", {
+        state: { token: parsedAuth.token },
+      });
     }
   };
 

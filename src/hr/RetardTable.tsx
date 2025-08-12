@@ -72,9 +72,13 @@ export default function RetardTable() {
       );
     }
     if (searchSite.trim() !== "") {
-      filteredList = filteredList.filter((r: Retard) =>
-        r.site.toLowerCase().includes(searchSite.toLowerCase())
-      );
+      if (searchSite == "All") {
+        filteredList = retards;
+      } else {
+        filteredList = filteredList.filter((r: Retard) =>
+          r.site.toLowerCase().includes(searchSite.toLowerCase())
+        );
+      }
     }
     if (searchService.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
@@ -158,12 +162,14 @@ export default function RetardTable() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Site"
-          value={searchSite}
-          onChange={(e) => setSearchSite(e.target.value)}
-        />
+        <select onChange={(e) => setSearchSite(e.target.value)}>
+          <option value="all" selected>
+            all
+          </option>
+          <option value="Pec">Pec</option>
+          <option value="Pec-ac">Pec-ac</option>
+          <option value="Pec-plus">Pec-plus</option>
+        </select>
         <input
           type="text"
           placeholder="Service"

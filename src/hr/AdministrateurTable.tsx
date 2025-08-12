@@ -73,9 +73,13 @@ export default function AdministrateurTable() {
       );
     }
     if (searchSite.trim() !== "") {
-      filteredList = filteredList.filter((a: Admin) =>
-        a.site.toLowerCase().includes(searchSite.toLowerCase())
-      );
+      if (searchSite === "all") {
+        filteredList = admins;
+      } else {
+        filteredList = filteredList.filter((a: Admin) =>
+          a.site.toLowerCase().includes(searchSite.toLowerCase())
+        );
+      }
     }
     if (startDate && endDate) {
       const start = new Date(startDate);
@@ -152,6 +156,14 @@ export default function AdministrateurTable() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
+        <select onChange={(e) => setSearchSite(e.target.value)}>
+          <option value="all" selected>
+            all
+          </option>
+          <option value="Pec">Pec</option>
+          <option value="Pec-ac">Pec-ac</option>
+          <option value="Pec-plus">Pec-plus</option>
+        </select>
         <input
           type="text"
           placeholder="Site"

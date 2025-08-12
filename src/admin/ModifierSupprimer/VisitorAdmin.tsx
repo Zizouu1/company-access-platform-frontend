@@ -3,7 +3,7 @@ import axios from "axios";
 import styles from "./Table.module.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
-export default function VisitorTable() {
+export default function VisitorAdmin() {
   const [visitors, setVisitors] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [searchName, setSearchName] = useState("");
@@ -110,7 +110,7 @@ export default function VisitorTable() {
   ]);
 
   const handleEdit = (id: string) => {
-    navigate(`/ModifierVisitor/${id}`, { state: { token } });
+    navigate(`/UpdateVisitor/${id}`, { state: { token } });
   };
   const handleDelete = (id: string) => {
     axios

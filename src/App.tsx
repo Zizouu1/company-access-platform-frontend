@@ -17,6 +17,12 @@ import AddUser from "./admin/GestionUtilisateur/UpdateUser";
 import UpdateUser from "./admin/GestionUtilisateur/AddUser";
 import AddSalarie from "./admin/GestionSalarie/AddSalarie";
 import UpdateSalarie from "./admin/GestionSalarie/UpdateSalarie";
+import VisitorAdmin from "./admin/ModifierSupprimer/VisitorAdmin";
+import DelayAdmin from "./admin/ModifierSupprimer/DelayAdmin";
+import AdministrateurAdmin from "./admin/ModifierSupprimer/AdministratorAdmin";
+import UpdateVisitor from "./admin/ModifierSupprimer/UpdateVisitor";
+import UpdateAdministrateur from "./admin/ModifierSupprimer/UpdateAdministrator";
+import UpdateDelay from "./admin/ModifierSupprimer/UpdateDelay";
 
 function App() {
   return (
@@ -47,9 +53,21 @@ function App() {
           />
           <Route path="/GestionSalaries" element={<GestionSalaries />} />
           <Route path="/AjouterUtilisateur" element={<AddUser />} />
-          <Route path="/ModifierUtilisateur" element={<UpdateUser />} />
+          <Route path="/ModifierUtilisateur/:id" element={<UpdateUser />} />
           <Route path="/AjouterSalaries" element={<AddSalarie />} />
-          <Route path="/ModifierSalaries" element={<UpdateSalarie />} />
+          <Route path="/ModifierSalaries/:id" element={<UpdateSalarie />} />
+          <Route path="/modifierSupprimerVisiteur" element={<VisitorAdmin />} />
+          <Route
+            path="/modifierSupprimerAdministrateur"
+            element={<AdministrateurAdmin />}
+          />
+          <Route path="/modifierSupprimerRetard" element={<DelayAdmin />} />
+          <Route path="/UpdateVisitor/:id" element={<UpdateVisitor />} />
+          <Route path="/UpdateDelay/:id" element={<UpdateDelay />} />
+          <Route
+            path="/UpdateAdministrateur/:id"
+            element={<UpdateAdministrateur />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
