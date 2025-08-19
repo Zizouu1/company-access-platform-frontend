@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import styles from "./change.module.css";
-
+import styles from "/src/admin/change.module.css";
 export default function Administrateur() {
   const location = useLocation();
   const token = location.state?.token;
@@ -34,7 +33,7 @@ export default function Administrateur() {
         site: "",
       });
     } catch {
-      setMessage("Employé introuvable");
+      setMessage("Erreur lors de l'ajout.");
     }
   };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,13 +51,16 @@ export default function Administrateur() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      await axios.post(`http://localhost:3000/upload-employees`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          role: "admin",
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `http://localhost:3000/admin/upload-employees`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setMessage("Fichier CSV téléchargé avec succès!");
     } catch {
       setMessage("Erreur lors du téléchargement du fichier CSV.");
@@ -71,7 +73,11 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/GestionSalaries" className={styles["back-link"]}>
+      <Link
+        to="/GestionSalaries"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -81,7 +87,6 @@ export default function Administrateur() {
           <button className={styles["upload-button"]} onClick={handleUpload}>
             Télécharger un fichier CSV
           </button>
-          {message && <p>{message}</p>}
         </div>
 
         {message && <p className={styles["message"]}>{message}</p>}
@@ -119,6 +124,9 @@ export default function Administrateur() {
               value={form.site}
               onChange={(e) => setForm({ ...form, site: e.target.value })}
             >
+              <option value="" disabled>
+                — Sélectionner un site —
+              </option>
               <option value="Pec">Pec</option>
               <option value="Pec-ac">Pec-ac</option>
               <option value="Pec-plus">Pec-plus</option>

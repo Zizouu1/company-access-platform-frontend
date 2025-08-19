@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import axios, { AxiosError } from "axios";
-import styles from "./form.module.css";
-
+import axios from "axios";
+import styles from "/src/admin/change.module.css";
 export default function UpdateVisitor() {
   const location = useLocation();
   const token = location.state?.token;
@@ -49,7 +48,7 @@ export default function UpdateVisitor() {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      await axios.patch("http://localhost:3000/visitor-manager", form, {
+      await axios.patch(`http://localhost:3000/visitor-manager/${id}`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
           role: "admin",
@@ -57,21 +56,8 @@ export default function UpdateVisitor() {
       });
 
       setMessage("Visiteur modifié avec succès!");
-      setForm({
-        dateA: "",
-        time: "",
-        id: "",
-        fullname: "",
-        matriculeV: "",
-        typeV: "",
-        aQui: "",
-      });
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error: string })?.error ||
-          "Erreur , veuillez réessayer"
-      );
+    } catch {
+      setMessage("Erreur , veuillez réessayer");
     }
   };
 
@@ -81,11 +67,15 @@ export default function UpdateVisitor() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/modifierVisiteur" className={styles["back-link"]}>
+      <Link
+        to="/modifierSupprimerVisiteur"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un visiteur</h2>
+        <h2 className={styles["form-title"]}>Modifier un visiteur</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleSubmit}>

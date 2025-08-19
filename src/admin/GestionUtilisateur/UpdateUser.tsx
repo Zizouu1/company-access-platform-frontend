@@ -1,15 +1,19 @@
-import styles from "./change.module.css";
+import styles from "/src/admin/change.module.css";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
 export default function UpadteUser() {
-  const [id, setId] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const userid = useParams();
+  const { id: userid } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const token = location.state?.token;
+
+  interface UserPayload {
+    id: string;
+    username: string;
+    role: string;
+    password?: string;
+  }
 
   useEffect(() => {
     if (!token) {
@@ -20,6 +24,7 @@ export default function UpadteUser() {
     id: "",
     username: "",
     password: "",
+    role: "",
   });
   const [message, setMessage] = useState("");
   useEffect(() => {
@@ -36,7 +41,8 @@ export default function UpadteUser() {
         setForm({
           id: foundUser.id,
           username: foundUser.username,
-          password: foundUser.password,
+          password: "",
+          role: foundUser.role,
         });
       } catch {
         setMessage(
@@ -48,19 +54,23 @@ export default function UpadteUser() {
   }, [userid, token]);
   const handleUpdate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const payload: UserPayload = {
+      id: form.id,
+      username: form.username,
+      role: form.role,
+    };
+
+    if (form.password.trim() !== "") {
+      payload.password = form.password;
+    }
     try {
-      await axios.patch(`http://localhost:3000/users/userid`, form, {
+      await axios.patch(`http://localhost:3000/users/${userid}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           role: "admin",
         },
       });
       setMessage("Utilisateur modifié avec succès!");
-      setForm({
-        id: "",
-        username: "",
-        password: "",
-      });
     } catch {
       setMessage(
         "Erreur lors de la modification de l'utilisateur. Veuillez réessayer."
@@ -69,7 +79,11 @@ export default function UpadteUser() {
   };
   return (
     <div className={styles["form-container"]}>
-      <Link to="/GestionUtilisateurs" className={styles["back-link"]}>
+      <Link
+        to="/GestionUtilisateurs"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -80,9 +94,9 @@ export default function UpadteUser() {
             <label>Matricule</label>
             <input
               type="text"
-              placeholder="Username"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              placeholder="Matricule"
+              value={form.id}
+              onChange={(e) => setForm({ ...form, id: e.target.value })}
               className={styles["sign-input"]}
               required
             />
@@ -91,26 +105,38 @@ export default function UpadteUser() {
             <label>Nom</label>
             <input
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Nom"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
               className={styles["sign-input"]}
               required
             />
           </div>
 
           <div className={styles["input-group"]}>
-            <label>Password</label>
+            <label>Mot de passe</label>
             <input
               type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mot de passe"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               className={styles["sign-input"]}
-              required
             />
           </div>
-          <button className={styles["submit-button"]}>Modifier</button>
+          <div className={styles["input-group"]}>
+            <label>Role</label>
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              className={styles["sign-input"]}
+              required
+            >
+              <option value="security">Security</option>
+              <option value="hr">HR</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button className={styles["submit-button"]}>Mettre à jour</button>
         </form>
       </div>
     </div>

@@ -1,7 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Gestion.module.css";
+import styles from "/src/admin/change.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+
+interface Employee {
+  id: string;
+  nom: string;
+  prenom: string;
+  site: string;
+}
+
+interface Retard {
+  id: string;
+  dateR: string;
+  time: string;
+  service: string;
+  employee: Employee;
+}
 
 export default function DelayAdmin() {
   const [retards, setRetards] = useState([]);
@@ -25,16 +40,6 @@ export default function DelayAdmin() {
     }
   }, [token, navigate]);
 
-  interface Retard {
-    id: string;
-    nom: string;
-    prenom: string;
-    site: string;
-    service: string;
-    dateR: string;
-    time: string;
-  }
-
   useEffect(() => {
     const fetchRetards = async () => {
       try {
@@ -46,8 +51,8 @@ export default function DelayAdmin() {
         });
         setRetards(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching retards:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des retards.");
       }
     };
 
@@ -59,22 +64,22 @@ export default function DelayAdmin() {
 
     if (searchNom.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.nom.toLowerCase().includes(searchNom.toLowerCase())
+        r.employee?.nom.toLowerCase().includes(searchNom.toLowerCase())
       );
     }
     if (searchPrenom.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
+        r.employee?.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
       );
     }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.id.toLowerCase().includes(searchId.toLowerCase())
+        r.employee?.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
     if (searchSite.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.site.toLowerCase().includes(searchSite.toLowerCase())
+        r.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
       );
     }
     if (searchService.trim() !== "") {
@@ -103,12 +108,12 @@ export default function DelayAdmin() {
     retards,
   ]);
 
-  const handleEdit = (id: string) => {
-    navigate(`/UpdateDelay/${id}`, { state: { token } });
+  const handleEdit = (RId: string) => {
+    navigate(`/UpdateDelay/${RId}`, { state: { token } });
   };
-  const handleDelete = (id: string) => {
+  const handleDelete = (RId: string) => {
     axios
-      .delete(`http://localhost:3000/delay-pec/${id}`, {
+      .delete(`http://localhost:3000/delay-pec/${RId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           role: "admin",
@@ -116,10 +121,10 @@ export default function DelayAdmin() {
       })
       .then(() => {
         setRetards((prevReards) =>
-          prevReards.filter((retard: Retard) => retard.id !== id)
+          prevReards.filter((retard: Retard) => retard.employee?.id !== RId)
         );
         setFiltered((prevFiltered) =>
-          prevFiltered.filter((retard: Retard) => retard.id !== id)
+          prevFiltered.filter((retard: Retard) => retard.employee?.id !== RId)
         );
       })
       .catch(() => {
@@ -132,7 +137,11 @@ export default function DelayAdmin() {
   return (
     <div className={styles["admin-container"]}>
       <h2 className={styles["admin-title"]}>Liste des retards PEC</h2>
-      <Link to="/admin" className={styles["back-link"]}>
+      <Link
+        to="/ModifierSupprimer"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
 
@@ -168,12 +177,12 @@ export default function DelayAdmin() {
           onChange={(e) => setSearchService(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
@@ -197,10 +206,10 @@ export default function DelayAdmin() {
               <tr key={index}>
                 <td>{r.dateR}</td>
                 <td>{r.time}</td>
-                <td>{r.id}</td>
-                <td>{r.nom}</td>
-                <td>{r.prenom}</td>
-                <td>{r.site}</td>
+                <td>{r.employee?.id}</td>
+                <td>{r.employee?.nom}</td>
+                <td>{r.employee?.prenom}</td>
+                <td>{r.employee?.site}</td>
                 <td>{r.service}</td>
                 <td>
                   <button

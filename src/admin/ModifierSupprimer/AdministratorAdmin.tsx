@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Gestion.module.css";
+import styles from "/src/admin/change.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+
+interface Employee {
+  id: string;
+  nom: string;
+  prenom: string;
+  site: string;
+}
+
+interface Admin {
+  id: string;
+  dateR: string;
+  time: string;
+  employee: Employee;
+}
 
 export default function AdministrateurAdmin() {
   const [admins, setAdmins] = useState([]);
@@ -24,15 +38,6 @@ export default function AdministrateurAdmin() {
     }
   }, [token, navigate]);
 
-  interface Admin {
-    id: string;
-    nom: string;
-    prenom: string;
-    site: string;
-    dateR: string;
-    time: string;
-  }
-
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
@@ -47,8 +52,8 @@ export default function AdministrateurAdmin() {
         );
         setAdmins(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching admins:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des administrateurs.");
       }
     };
 
@@ -60,22 +65,22 @@ export default function AdministrateurAdmin() {
 
     if (searchNom.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.nom.toLowerCase().includes(searchNom.toLowerCase())
+        a.employee?.nom.toLowerCase().includes(searchNom.toLowerCase())
       );
     }
     if (searchPrenom.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
+        a.employee?.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
       );
     }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.id.toLowerCase().includes(searchId.toLowerCase())
+        a.employee?.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
     if (searchSite.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.site.toLowerCase().includes(searchSite.toLowerCase())
+        a.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
       );
     }
     if (startDate && endDate) {
@@ -98,12 +103,12 @@ export default function AdministrateurAdmin() {
     admins,
   ]);
 
-  const handleEdit = (id: string) => {
-    navigate(`/UpdateAdministrateur/${id}`, { state: { token } });
+  const handleEdit = (adminId: string) => {
+    navigate(`/UpdateAdministrateur/${adminId}`, { state: { token } });
   };
-  const handleDelete = (id: string) => {
+  const handleDelete = (adminId: string) => {
     axios
-      .delete(`http://localhost:3000/follow-administrator/${id}`, {
+      .delete(`http://localhost:3000/follow-administrator/${adminId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           role: "admin",
@@ -111,10 +116,10 @@ export default function AdministrateurAdmin() {
       })
       .then(() => {
         setAdmins((prevAdmin) =>
-          prevAdmin.filter((admin: Admin) => admin.id !== id)
+          prevAdmin.filter((admin: Admin) => admin.employee?.id !== adminId)
         );
         setFiltered((prevFiltered) =>
-          prevFiltered.filter((admin: Admin) => admin.id !== id)
+          prevFiltered.filter((admin: Admin) => admin.employee?.id !== adminId)
         );
       })
       .catch(() => {
@@ -129,7 +134,11 @@ export default function AdministrateurAdmin() {
       <h2 className={styles["Gestion-title"]}>
         Liste des retards administrateurs
       </h2>
-      <Link to="/hr" className={styles["back-link"]}>
+      <Link
+        to="/ModifierSupprimer"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
 
@@ -164,7 +173,7 @@ export default function AdministrateurAdmin() {
           onChange={(e) => setStartDate(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
@@ -187,10 +196,10 @@ export default function AdministrateurAdmin() {
               <tr key={index}>
                 <td>{a.dateR}</td>
                 <td>{a.time}</td>
-                <td>{a.id}</td>
-                <td>{a.nom}</td>
-                <td>{a.prenom}</td>
-                <td>{a.site}</td>
+                <td>{a.employee?.id}</td>
+                <td>{a.employee?.nom}</td>
+                <td>{a.employee?.prenom}</td>
+                <td>{a.employee?.site}</td>
                 <td>
                   <button
                     className={styles["delete-button"]}

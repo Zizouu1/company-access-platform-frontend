@@ -1,7 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
-import axios, { AxiosError } from "axios";
-import styles from "./form.module.css";
+import axios from "axios";
+import styles from "/src/admin/change.module.css";
+
+interface Employee {
+  id: string;
+  nom: string;
+  prenom: string;
+  site: string;
+}
+
+interface Retard {
+  id: string;
+  dateR: string;
+  time: string;
+  service: string;
+  employee: Employee;
+}
 
 export default function UpdateDelay() {
   const { id } = useParams();
@@ -11,7 +26,7 @@ export default function UpdateDelay() {
   const [form, setForm] = useState({
     dateR: "",
     time: "",
-    id: "",
+    employeeId: "",
     nom: "",
     prenom: "",
     site: "",
@@ -21,21 +36,25 @@ export default function UpdateDelay() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!token || !id) return;
+    if (!id) return;
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/delay-pec/${id}`, {
-          headers: { Authorization: `Bearer ${token}`, role: "admin" },
-        });
+        const res = await axios.get<Retard>(
+          `http://localhost:3000/delay-pec/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}`, role: "admin" },
+          }
+        );
+        const retard = res.data;
         setForm({
-          dateR: res.data.dateR || "",
-          time: res.data.time || "",
-          id: res.data.id || "",
-          nom: res.data.nom || "",
-          prenom: res.data.prenom || "",
-          site: res.data.site || "",
-          service: res.data.service || "",
+          dateR: retard.dateR,
+          time: retard.time,
+          service: retard.service,
+          employeeId: retard.employee.id,
+          nom: retard.employee.nom,
+          prenom: retard.employee.prenom,
+          site: retard.employee.site,
         });
         setMessage("");
       } catch {
@@ -46,26 +65,59 @@ export default function UpdateDelay() {
     fetchData();
   }, [id, token]);
 
+  useEffect(() => {
+    if (!form.employeeId) {
+      setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
+      return;
+    }
+
+    const fetchEmployee = async () => {
+      try {
+        const res = await axios.get<Employee>(
+          `http://localhost:3000/employees/${form.employeeId}`,
+          { headers: { Authorization: `Bearer ${token}`, role: "admin" } }
+        );
+        const emp = res.data;
+        setForm((prev) => ({
+          ...prev,
+          nom: emp.nom,
+          prenom: emp.prenom,
+          site: emp.site,
+        }));
+        setMessage("");
+      } catch {
+        setMessage("Employé introuvable");
+        setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
+      }
+    };
+
+    fetchEmployee();
+  }, [form.employeeId, token]);
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!form.dateR || !form.time) {
-      setMessage("Veuillez remplir les champs obligatoires (Date, Heure).");
+    if (!form.dateR || !form.time || !form.employeeId) {
+      setMessage(
+        "Veuillez remplir les champs obligatoires (Matricule, Date, Heure)."
+      );
       return;
     }
 
     try {
-      await axios.patch(`http://localhost:3000/delay-pec/${id}`, form, {
+      const payload = {
+        dateR: form.dateR,
+        time: form.time,
+        employeeId: form.employeeId,
+        service: form.service,
+      };
+      await axios.patch(`http://localhost:3000/delay-pec/${id}`, payload, {
         headers: { Authorization: `Bearer ${token}`, role: "admin" },
       });
 
       setMessage("Modifié avec succès !");
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error?: string })?.error ||
-          "Erreur, veuillez réessayer"
-      );
+    } catch {
+      setMessage("Erreur, veuillez réessayer");
     }
   };
 
@@ -75,7 +127,11 @@ export default function UpdateDelay() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/security" className={styles["back-link"]}>
+      <Link
+        to="/modifierSupprimerRetard"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -105,8 +161,8 @@ export default function UpdateDelay() {
             <input
               type="text"
               placeholder="Matricule..."
-              value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value })}
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             />
           </div>
           <div className={styles["input-group"]}>

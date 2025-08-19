@@ -13,7 +13,7 @@ export default function RetardTable() {
   const [searchService, setSearchService] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
+  const [message, setMessage] = useState("");
   const location = useLocation();
   const token = location.state?.token;
   const navigate = useNavigate();
@@ -25,10 +25,12 @@ export default function RetardTable() {
   }, [token, navigate]);
 
   interface Retard {
-    id: string;
-    nom: string;
-    prenom: string;
-    site: string;
+    employee: {
+      id: string;
+      nom: string;
+      prenom: string;
+      site: string;
+    };
     service: string;
     dateR: string;
     time: string;
@@ -45,8 +47,8 @@ export default function RetardTable() {
         });
         setRetards(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching retards:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des retards.");
       }
     };
 
@@ -58,17 +60,17 @@ export default function RetardTable() {
 
     if (searchNom.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.nom.toLowerCase().includes(searchNom.toLowerCase())
+        r.employee?.nom.toLowerCase().includes(searchNom.toLowerCase())
       );
     }
     if (searchPrenom.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
+        r.employee?.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
       );
     }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.id.toLowerCase().includes(searchId.toLowerCase())
+        r.employee?.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
     if (searchSite.trim() !== "") {
@@ -76,7 +78,7 @@ export default function RetardTable() {
         filteredList = retards;
       } else {
         filteredList = filteredList.filter((r: Retard) =>
-          r.site.toLowerCase().includes(searchSite.toLowerCase())
+          r.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
         );
       }
     }
@@ -112,10 +114,10 @@ export default function RetardTable() {
     const csvData = filtered.map((r: Retard) => ({
       "Date de retard": r.dateR,
       "Heure d'arrivée": r.time,
-      Matricule: r.id,
-      Nom: r.nom,
-      Prénom: r.prenom,
-      Site: r.site,
+      Matricule: r.employee?.id,
+      Nom: r.employee?.nom,
+      Prénom: r.employee?.prenom,
+      Site: r.employee?.site,
       Service: r.service,
     }));
 
@@ -191,6 +193,7 @@ export default function RetardTable() {
       <button className={styles["export-button"]} onClick={handleExport}>
         Exporter en CSV
       </button>
+      {message && <p className={styles["message"]}>{message}</p>}
 
       <div className={styles["table-container"]}>
         <table className={styles["visitor-table"]}>
@@ -210,10 +213,10 @@ export default function RetardTable() {
               <tr key={index}>
                 <td>{r.dateR}</td>
                 <td>{r.time}</td>
-                <td>{r.id}</td>
-                <td>{r.nom}</td>
-                <td>{r.prenom}</td>
-                <td>{r.site}</td>
+                <td>{r.employee?.id}</td>
+                <td>{r.employee?.nom}</td>
+                <td>{r.employee?.prenom}</td>
+                <td>{r.employee?.site}</td>
                 <td>{r.service}</td>
               </tr>
             ))}

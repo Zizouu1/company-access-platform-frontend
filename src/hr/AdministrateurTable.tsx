@@ -12,6 +12,7 @@ export default function AdministrateurTable() {
   const [searchSite, setSearchSite] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [message, setMessage] = useState("");
 
   const location = useLocation();
   const token = location.state?.token;
@@ -24,12 +25,14 @@ export default function AdministrateurTable() {
   }, [token, navigate]);
 
   interface Admin {
-    id: string;
-    nom: string;
-    prenom: string;
-    site: string;
     dateR: string;
     time: string;
+    employee: {
+      id: string;
+      nom: string;
+      prenom: string;
+      site: string;
+    };
   }
 
   useEffect(() => {
@@ -46,8 +49,8 @@ export default function AdministrateurTable() {
         );
         setAdmins(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching admins:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des administrateurs.");
       }
     };
 
@@ -59,28 +62,25 @@ export default function AdministrateurTable() {
 
     if (searchNom.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.nom.toLowerCase().includes(searchNom.toLowerCase())
+        a.employee?.nom.toLowerCase().includes(searchNom.toLowerCase())
       );
     }
     if (searchPrenom.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
+        a.employee?.prenom.toLowerCase().includes(searchPrenom.toLowerCase())
       );
     }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
-        a.id.toLowerCase().includes(searchId.toLowerCase())
+        a.employee?.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
-    if (searchSite.trim() !== "") {
-      if (searchSite === "all") {
-        filteredList = admins;
-      } else {
-        filteredList = filteredList.filter((a: Admin) =>
-          a.site.toLowerCase().includes(searchSite.toLowerCase())
-        );
-      }
+    if (searchSite.trim() !== "" && searchSite !== "all") {
+      filteredList = filteredList.filter((a: Admin) =>
+        a.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
+      );
     }
+
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -107,10 +107,10 @@ export default function AdministrateurTable() {
     const csvData = filtered.map((a: Admin) => ({
       "Date de retard": a.dateR,
       "Heure d'arrivée": a.time,
-      Matricule: a.id,
-      Nom: a.nom,
-      Prénom: a.prenom,
-      Site: a.site,
+      Matricule: a.employee?.id,
+      Nom: a.employee?.nom,
+      Prénom: a.employee?.prenom,
+      Site: a.employee?.site,
     }));
 
     const csvContent =
@@ -156,20 +156,15 @@ export default function AdministrateurTable() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
-        <select onChange={(e) => setSearchSite(e.target.value)}>
-          <option value="all" selected>
-            all
-          </option>
+        <select
+          value={searchSite}
+          onChange={(e) => setSearchSite(e.target.value)}
+        >
+          <option value="all">All</option>
           <option value="Pec">Pec</option>
           <option value="Pec-ac">Pec-ac</option>
           <option value="Pec-plus">Pec-plus</option>
         </select>
-        <input
-          type="text"
-          placeholder="Site"
-          value={searchSite}
-          onChange={(e) => setSearchSite(e.target.value)}
-        />
         <input
           type="datetime-local"
           value={startDate}
@@ -185,6 +180,7 @@ export default function AdministrateurTable() {
       <button className={styles["export-button"]} onClick={handleExport}>
         Exporter en CSV
       </button>
+      {message && <p className={styles["message"]}>{message}</p>}
 
       <div className={styles["table-container"]}>
         <table className={styles["visitor-table"]}>
@@ -203,10 +199,10 @@ export default function AdministrateurTable() {
               <tr key={index}>
                 <td>{a.dateR}</td>
                 <td>{a.time}</td>
-                <td>{a.id}</td>
-                <td>{a.nom}</td>
-                <td>{a.prenom}</td>
-                <td>{a.site}</td>
+                <td>{a.employee?.id}</td>
+                <td>{a.employee?.nom}</td>
+                <td>{a.employee?.prenom}</td>
+                <td>{a.employee?.site}</td>
               </tr>
             ))}
           </tbody>

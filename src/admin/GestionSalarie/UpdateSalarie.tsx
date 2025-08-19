@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "./change.module.css";
-
+import styles from "/src/admin/change.module.css";
 export default function Administrateur() {
   const location = useLocation();
   const token = location.state?.token;
-  const employeeId = useParams();
+  const { id: employeeId } = useParams();
 
   const [form, setForm] = useState({
     id: "",
@@ -55,12 +54,6 @@ export default function Administrateur() {
         },
       });
       setMessage("Salarie modifié avec succès!");
-      setForm({
-        id: "",
-        nom: "",
-        prenom: "",
-        site: "",
-      });
     } catch {
       setMessage("Employé introuvable");
     }
@@ -72,7 +65,11 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/GestionSalaries" className={styles["back-link"]}>
+      <Link
+        to="/GestionSalaries"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -119,7 +116,7 @@ export default function Administrateur() {
             </select>
           </div>
 
-          <button className={styles["submit-button"]}>Submit</button>
+          <button className={styles["submit-button"]}>Mettre à jour</button>
         </form>
       </div>
     </div>

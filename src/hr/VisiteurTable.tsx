@@ -13,6 +13,7 @@ export default function VisitorTable() {
   const [searchMatriculeV, setsearchMatriculeV] = useState("");
   const [searchTypeV, setsearchTypeV] = useState("");
   const [searchAQui, setsearchAQui] = useState("");
+  const [message, setMessage] = useState("");
   const location = useLocation();
   const token = location.state?.token;
   const navigate = useNavigate();
@@ -48,8 +49,8 @@ export default function VisitorTable() {
 
         setVisitors(visitorsWithDates);
         setFiltered(visitorsWithDates);
-      } catch (error) {
-        console.error("Error fetching visitors:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des visiteurs.");
       }
     };
 
@@ -187,6 +188,7 @@ export default function VisitorTable() {
       <button className={styles["export-button"]} onClick={handleExport}>
         Exporter en CSV
       </button>
+      {message && <p className={styles["message"]}>{message}</p>}
       <div className={styles["table-container"]}>
         <table className={styles["visitor-table"]}>
           <thead>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import styles from "./form.module.css";
 
 export default function Administrateur() {
@@ -10,7 +10,7 @@ export default function Administrateur() {
   const [form, setForm] = useState({
     dateR: "",
     time: "",
-    id: "",
+    employeeId: "",
     nom: "",
     prenom: "",
     site: "",
@@ -19,16 +19,15 @@ export default function Administrateur() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!form.id) {
+    if (!form.employeeId) {
       setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
-      setMessage("");
       return;
     }
 
     const fetchEmployee = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/employees/${form.id}`,
+          `http://localhost:3000/employees/${form.employeeId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -40,20 +39,30 @@ export default function Administrateur() {
           prenom: emp.prenom,
           site: emp.site,
         }));
-        setMessage("");
       } catch {
         setMessage("Employé introuvable");
-        setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
+        setForm((prev) => ({
+          ...prev,
+          nom: "",
+          prenom: "",
+          site: "",
+        }));
       }
     };
 
     fetchEmployee();
-  }, [form.id, token]);
+  }, [form.employeeId, token]);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!form.id || !form.dateR || !form.time) {
+    const formatTimeForBackend = (time: string) => {
+      if (time.length === 5) return `${time}:00`;
+      if (time.length === 4) return `0${time}:00`;
+      return time;
+    };
+
+    if (!form.employeeId || !form.dateR || !form.time) {
       setMessage(
         "Veuillez remplir les champs obligatoires (Matricule, Date, Heure)."
       );
@@ -62,15 +71,13 @@ export default function Administrateur() {
 
     try {
       const payload = {
-        id: form.id,
         dateR: form.dateR,
-        time: form.time,
-        site: form.site,
+        time: formatTimeForBackend(form.time),
+        employeeId: form.employeeId,
       };
       await axios.post("http://localhost:3000/follow-administrator", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          role: "security",
         },
       });
 
@@ -78,17 +85,13 @@ export default function Administrateur() {
       setForm({
         dateR: "",
         time: "",
-        id: "",
+        employeeId: "",
         nom: "",
         prenom: "",
         site: "",
       });
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error: string })?.error ||
-          "Erreur , veuillez réessayer"
-      );
+    } catch {
+      setMessage("Erreur , veuillez réessayer");
     }
   };
 
@@ -129,8 +132,8 @@ export default function Administrateur() {
             <input
               type="text"
               placeholder="Matricule..."
-              value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value })}
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             />
           </div>
           <div className={styles["input-group"]}>

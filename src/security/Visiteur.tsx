@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import styles from "./form.module.css";
 
 export default function Visiteur() {
@@ -39,12 +39,8 @@ export default function Visiteur() {
         typeV: "",
         aQui: "",
       });
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error: string })?.error ||
-          "Erreur , veuillez réessayer"
-      );
+    } catch {
+      setMessage("Erreur , veuillez réessayer");
     }
   };
 

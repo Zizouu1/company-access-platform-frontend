@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import styles from "./form.module.css";
 
 export default function Retard() {
@@ -22,7 +22,6 @@ export default function Retard() {
   useEffect(() => {
     if (!form.id) {
       setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
-      setMessage("");
       return;
     }
 
@@ -63,10 +62,9 @@ export default function Retard() {
 
     try {
       const payload = {
-        id: form.id,
+        employee: { id: form.id },
         dateR: form.dateR,
         time: form.time,
-        site: form.site,
         service: form.service,
       };
 
@@ -87,12 +85,8 @@ export default function Retard() {
         site: "",
         service: "",
       });
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error?: string })?.error ||
-          "Erreur, veuillez réessayer"
-      );
+    } catch {
+      setMessage("Erreur, veuillez réessayer");
     }
   };
 
@@ -178,7 +172,6 @@ export default function Retard() {
               type="text"
               placeholder="Service..."
               value={form.service}
-              readOnly
               onChange={(e) => setForm({ ...form, service: e.target.value })}
             />
           </div>

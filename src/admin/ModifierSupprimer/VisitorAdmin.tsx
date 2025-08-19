@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Table.module.css";
+import styles from "/src/admin/change.module.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function VisitorAdmin() {
@@ -50,8 +50,8 @@ export default function VisitorAdmin() {
 
         setVisitors(visitorsWithDates);
         setFiltered(visitorsWithDates);
-      } catch (error) {
-        console.error("Error fetching visitors:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des visiteurs.");
       }
     };
 
@@ -138,7 +138,11 @@ export default function VisitorAdmin() {
   return (
     <div className={styles["Gestion-container"]}>
       <h2 className={styles["Gestion-title"]}>Liste des visiteurs</h2>
-      <Link to="/admin" className={styles["back-link"]}>
+      <Link
+        to="/ModifierSupprimer"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
 

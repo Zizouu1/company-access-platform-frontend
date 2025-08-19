@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Logout from "../../login/Logout";
 
 export default function ModifierSupprimer() {
@@ -36,6 +36,7 @@ export default function ModifierSupprimer() {
 
   return (
     <div>
+      <Link to="/admin">Retour</Link>
       <button onClick={Visiteur}>Visiteur</button>
       <button onClick={Administrateur}>Suivi Administrateur</button>
       <button onClick={Retard}>Retard</button>

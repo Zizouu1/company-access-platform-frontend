@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -27,15 +27,8 @@ export default function Login() {
       );
 
       navigate(`/${data.role}`);
-    } catch (err) {
-      const error = err as AxiosError;
-      if (error.response) {
-        setMessage(
-          (error.response.data as { message: string }).message || "Login failed"
-        );
-      } else {
-        setMessage("Network error");
-      }
+    } catch {
+      setMessage("Login failed");
     }
   };
 

@@ -13,8 +13,8 @@ import VisiteurTable from "./hr/VisiteurTable";
 import ModifierSupprimer from "./admin/ModifierSupprimer/ModifierSupprimer";
 import GestionUtilisateurs from "./admin/GestionUtilisateur/GestionUtilisateurs";
 import GestionSalaries from "./admin/GestionSalarie/GestionSalaries";
-import AddUser from "./admin/GestionUtilisateur/UpdateUser";
-import UpdateUser from "./admin/GestionUtilisateur/AddUser";
+import AddUser from "./admin/GestionUtilisateur/AddUser";
+import UpdateUser from "./admin/GestionUtilisateur/UpdateUser";
 import AddSalarie from "./admin/GestionSalarie/AddSalarie";
 import UpdateSalarie from "./admin/GestionSalarie/UpdateSalarie";
 import VisitorAdmin from "./admin/ModifierSupprimer/VisitorAdmin";
@@ -55,7 +55,7 @@ function App() {
           <Route path="/AjouterUtilisateur" element={<AddUser />} />
           <Route path="/ModifierUtilisateur/:id" element={<UpdateUser />} />
           <Route path="/AjouterSalaries" element={<AddSalarie />} />
-          <Route path="/ModifierSalaries/:id" element={<UpdateSalarie />} />
+          <Route path="/ModifierSalarie/:id" element={<UpdateSalarie />} />
           <Route path="/modifierSupprimerVisiteur" element={<VisitorAdmin />} />
           <Route
             path="/modifierSupprimerAdministrateur"

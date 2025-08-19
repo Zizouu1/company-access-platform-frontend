@@ -1,7 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import axios, { AxiosError } from "axios";
-import styles from "./form.module.css";
+import axios from "axios";
+import styles from "/src/admin/change.module.css";
+
+interface Employee {
+  id: string;
+  nom: string;
+  prenom: string;
+  site: string;
+}
+
+interface Admin {
+  id: string;
+  dateR: string;
+  time: string;
+  employee: Employee;
+}
 
 export default function UpdateAdministrateur() {
   const location = useLocation();
@@ -11,7 +25,7 @@ export default function UpdateAdministrateur() {
   const [form, setForm] = useState({
     dateR: "",
     time: "",
-    id: "",
+    employeeId: "",
     nom: "",
     prenom: "",
     site: "",
@@ -23,20 +37,18 @@ export default function UpdateAdministrateur() {
     if (!id) return;
     const fetchRecord = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.get<Admin>(
           `http://localhost:3000/follow-administrator/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}`, role: "admin" } }
         );
-        const record = res.data;
+        const admin = res.data;
         setForm({
-          dateR: record.dateR,
-          time: record.time,
-          id: record.id,
-          nom: record.nom,
-          prenom: record.prenom,
-          site: record.site,
+          dateR: admin.dateR,
+          time: admin.time,
+          employeeId: admin.employee.id,
+          nom: admin.employee.nom,
+          prenom: admin.employee.prenom,
+          site: admin.employee.site,
         });
       } catch {
         setMessage("Enregistrement introuvable");
@@ -46,18 +58,16 @@ export default function UpdateAdministrateur() {
   }, [id, token]);
 
   useEffect(() => {
-    if (!form.id) {
+    if (!form.employeeId) {
       setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
       return;
     }
 
     const fetchEmployee = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/employees/${form.id}`,
-          {
-            headers: { Authorization: `Bearer ${token}`, role: "admin" },
-          }
+        const res = await axios.get<Employee>(
+          `http://localhost:3000/employees/${form.employeeId}`,
+          { headers: { Authorization: `Bearer ${token}`, role: "admin" } }
         );
         const emp = res.data;
         setForm((prev) => ({
@@ -74,12 +84,12 @@ export default function UpdateAdministrateur() {
     };
 
     fetchEmployee();
-  }, [form.id, token]);
+  }, [form.employeeId, token]);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!form.id || !form.dateR || !form.time) {
+    if (!form.employeeId || !form.dateR || !form.time) {
       setMessage(
         "Veuillez remplir les champs obligatoires (Matricule, Date, Heure)."
       );
@@ -88,36 +98,31 @@ export default function UpdateAdministrateur() {
 
     try {
       const payload = {
-        id: form.id,
         dateR: form.dateR,
         time: form.time,
-        site: form.site,
+        employeeId: form.employeeId,
       };
       await axios.patch(
         `http://localhost:3000/follow-administrator/${id}`,
         payload,
-        {
-          headers: { Authorization: `Bearer ${token}`, role: "admin" },
-        }
+        { headers: { Authorization: `Bearer ${token}`, role: "admin" } }
       );
 
-      setMessage("Mise à jour réussie !");
-    } catch (err) {
-      const erreur = err as AxiosError;
-      setMessage(
-        (erreur.response?.data as { error: string })?.error ||
-          "Erreur , veuillez réessayer"
-      );
+      setMessage("Modifié avec succès !");
+    } catch {
+      setMessage("Erreur, veuillez réessayer");
     }
   };
 
-  if (!token) {
-    return <p>Token manquant. Veuillez vous reconnecter.</p>;
-  }
+  if (!token) return <p>Token manquant. Veuillez vous reconnecter.</p>;
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/modifierAdministrateur" className={styles["back-link"]}>
+      <Link
+        to="/modifierSupprimerAdministrateur"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -126,6 +131,7 @@ export default function UpdateAdministrateur() {
         </h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
+
         <form onSubmit={handleSubmit}>
           <div className={styles["input-group"]}>
             <label>Date de retard</label>
@@ -148,8 +154,8 @@ export default function UpdateAdministrateur() {
             <input
               type="text"
               placeholder="Matricule..."
-              value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value })}
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             />
           </div>
           <div className={styles["input-group"]}>
@@ -161,7 +167,6 @@ export default function UpdateAdministrateur() {
               className={styles["readonly-input"]}
             />
           </div>
-
           <div className={styles["input-group"]}>
             <label>Prénom</label>
             <input

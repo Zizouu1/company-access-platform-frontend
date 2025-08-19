@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Gestion.module.css";
+import styles from "/src/admin/change.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
 export default function GestionUtilisateurs() {
@@ -8,7 +8,10 @@ export default function GestionUtilisateurs() {
   const [filtered, setFiltered] = useState([]);
   const [searchId, setSearchId] = useState("");
   const [searchNom, setSearchNom] = useState("");
-  const [message, setMessage] = useState("");
+  const [searchRole, setSearchRole] = useState("");
+  const [errorMessages, setErrorMessages] = useState<{ [id: string]: string }>(
+    {}
+  );
   const location = useLocation();
   const token = location.state?.token;
   const navigate = useNavigate();
@@ -22,6 +25,7 @@ export default function GestionUtilisateurs() {
   interface User {
     id: string;
     username: string;
+    role: string;
   }
 
   useEffect(() => {
@@ -35,8 +39,11 @@ export default function GestionUtilisateurs() {
         });
         setUsers(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
+      } catch {
+        setErrorMessages((prev) => ({
+          ...prev,
+          fetch: "Erreur lors de la récupération des utilisateurs.",
+        }));
       }
     };
 
@@ -56,9 +63,18 @@ export default function GestionUtilisateurs() {
         r.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
+    if (searchRole.trim() !== "") {
+      if (searchRole === "all") {
+        filteredList = users;
+      } else {
+        filteredList = filteredList.filter((r: User) =>
+          r.role.toLowerCase().includes(searchRole.toLowerCase())
+        );
+      }
+    }
 
     setFiltered(filteredList);
-  }, [searchNom, searchId, users]);
+  }, [searchNom, searchId, searchRole, users]);
   const handleAddUser = () => {
     navigate("/AjouterUtilisateur", { state: { token } });
   };
@@ -80,18 +96,24 @@ export default function GestionUtilisateurs() {
         setFiltered((prevFiltered) =>
           prevFiltered.filter((user: User) => user.id !== id)
         );
+        setErrorMessages((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[id];
+          return newErrors;
+        });
       })
       .catch(() => {
-        setMessage(
-          "Erreur lors de la suppression de l'utilisateur. Veuillez réessayer."
-        );
+        setErrorMessages((prev) => ({
+          ...prev,
+          [id]: "Erreur lors de la suppression. Veuillez réessayer.",
+        }));
       });
   };
 
   return (
     <div className={styles["Gestion-container"]}>
       <h2 className={styles["Gestion-title"]}>Gestion des utilisateurs</h2>
-      <Link to="/hr" className={styles["back-link"]}>
+      <Link to="/admin" className={styles["back-link"]}>
         Retour
       </Link>
 
@@ -108,6 +130,15 @@ export default function GestionUtilisateurs() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
+        <select
+          value={searchRole}
+          onChange={(e) => setSearchRole(e.target.value)}
+        >
+          <option value="all">Tous les rôles</option>
+          <option value="security">Security</option>
+          <option value="hr">HR</option>
+          <option value="admin">Admin</option>
+        </select>
       </div>
 
       <button className={styles["add-button"]} onClick={handleAddUser}>
@@ -120,6 +151,7 @@ export default function GestionUtilisateurs() {
             <tr>
               <th>Matricule</th>
               <th>Nom</th>
+              <th>Role</th>
             </tr>
           </thead>
           <tbody>
@@ -127,6 +159,7 @@ export default function GestionUtilisateurs() {
               <tr key={index}>
                 <td>{r.id}</td>
                 <td>{r.username}</td>
+                <td>{r.role}</td>
                 <td>
                   <button
                     className={styles["delete-button"]}
@@ -144,7 +177,9 @@ export default function GestionUtilisateurs() {
                   </button>
                 </td>
                 <td>
-                  {message && <p className={styles["message"]}>{message}</p>}
+                  {errorMessages[r.id] && (
+                    <p className={styles["message"]}>{errorMessages[r.id]}</p>
+                  )}
                 </td>
               </tr>
             ))}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Gestion.module.css";
+import styles from "/src/admin/change.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
 export default function GestionSalaries() {
@@ -39,8 +39,8 @@ export default function GestionSalaries() {
         });
         setSalaries(res.data);
         setFiltered(res.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
+      } catch {
+        setMessage("Erreur lors de la récupération des salaries.");
       }
     };
 
@@ -66,9 +66,13 @@ export default function GestionSalaries() {
       );
     }
     if (searchSite.trim() !== "") {
-      filteredList = filteredList.filter((a: Salarie) =>
-        a.site.toLowerCase().includes(searchSite.toLowerCase())
-      );
+      if (searchSite === "") {
+        filteredList = salaries;
+      } else {
+        filteredList = filteredList.filter((a: Salarie) =>
+          a.site.toLowerCase().includes(searchSite.toLowerCase())
+        );
+      }
     }
 
     setFiltered(filteredList);
@@ -104,8 +108,8 @@ export default function GestionSalaries() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Gestion des utilisateurs</h2>
-      <Link to="/hr" className={styles["back-link"]}>
+      <h2 className={styles["Gestion-title"]}>Gestion des Salaries</h2>
+      <Link to="/admin" className={styles["back-link"]}>
         Retour
       </Link>
 
@@ -128,16 +132,19 @@ export default function GestionSalaries() {
           value={searchPrenom}
           onChange={(e) => setSearchPrenom(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Site"
+        <select
           value={searchSite}
           onChange={(e) => setSearchSite(e.target.value)}
-        />
+        >
+          <option value="">all</option>
+          <option value="Pec">Pec</option>
+          <option value="Pec-ac">Pec-ac</option>
+          <option value="Pec-plus">Pec-plus</option>
+        </select>
       </div>
 
       <button className={styles["add-button"]} onClick={handleAddUser}>
-        Ajouter un utilisateur
+        Ajouter un salarie
       </button>
 
       <div className={styles["table-container"]}>

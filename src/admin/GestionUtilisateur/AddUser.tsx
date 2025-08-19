@@ -1,11 +1,8 @@
-import styles from "./change.module.css";
+import styles from "/src/admin/change.module.css";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 export default function AddUser() {
-  const [id, setId] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const token = location.state?.token;
@@ -19,22 +16,32 @@ export default function AddUser() {
     id: "",
     username: "",
     password: "",
+    role: "",
   });
   const [message, setMessage] = useState("");
   const handleAdd = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/auth/register", form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          role: "admin",
+      await axios.post(
+        "http://localhost:3000/auth/register",
+        {
+          id: form.id,
+          username: form.username,
+          password: form.password,
+          role: form.role,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setMessage("Utilisateur ajouté avec succès!");
       setForm({
         id: "",
         username: "",
         password: "",
+        role: "",
       });
     } catch {
       setMessage(
@@ -44,7 +51,11 @@ export default function AddUser() {
   };
   return (
     <div className={styles["form-container"]}>
-      <Link to="/GestionUtilisateurs" className={styles["back-link"]}>
+      <Link
+        to="/GestionUtilisateurs"
+        className={styles["back-link"]}
+        state={{ token }}
+      >
         Retour
       </Link>
       <div className={styles["form-box"]}>
@@ -55,9 +66,9 @@ export default function AddUser() {
             <label>Matricule</label>
             <input
               type="text"
-              placeholder="Username"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              placeholder="Matricule"
+              value={form.id}
+              onChange={(e) => setForm({ ...form, id: e.target.value })}
               className={styles["sign-input"]}
               required
             />
@@ -66,24 +77,40 @@ export default function AddUser() {
             <label>Nom</label>
             <input
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Nom"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
               className={styles["sign-input"]}
               required
             />
           </div>
 
           <div className={styles["input-group"]}>
-            <label>Password</label>
+            <label>Mot de passe</label>
             <input
               type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mot de passe"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               className={styles["sign-input"]}
               required
             />
+          </div>
+          <div className={styles["input-group"]}>
+            <label>Role</label>
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              className={styles["sign-input"]}
+              required
+            >
+              <option value="" disabled>
+                — Sélectionner un rôle —
+              </option>
+              <option value="security">Security</option>
+              <option value="hr">HR</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
           <button className={styles["submit-button"]}>Ajouter</button>
         </form>
