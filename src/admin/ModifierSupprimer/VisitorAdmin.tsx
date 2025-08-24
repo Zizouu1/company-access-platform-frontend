@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Gestion.module.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function VisitorAdmin() {
@@ -138,13 +138,15 @@ export default function VisitorAdmin() {
   return (
     <div className={styles["Gestion-container"]}>
       <h2 className={styles["Gestion-title"]}>Liste des visiteurs</h2>
-      <Link
-        to="/ModifierSupprimer"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/ModifierSupprimer"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input
@@ -189,7 +191,7 @@ export default function VisitorAdmin() {
         />
       </div>
       <div className={styles["table-container"]}>
-        <table className={styles["visitor-table"]}>
+        <table className={styles["Gestion-table"]}>
           <thead>
             <tr>
               <th>Date d'arrivé</th>

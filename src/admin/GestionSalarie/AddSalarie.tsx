@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Ajouter.module.css";
 export default function Administrateur() {
   const location = useLocation();
   const token = location.state?.token;
   const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState("");
 
   const [form, setForm] = useState({
     id: "",
@@ -39,6 +40,7 @@ export default function Administrateur() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setFileName(e.target.files[0].name);
     }
   };
   const handleUpload = async (e: React.SyntheticEvent) => {
@@ -73,19 +75,42 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link
-        to="/GestionSalaries"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/GestionSalaries"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
+
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Ajouter un Salarie</h2>
-        <div>
-          <input type="file" accept=".csv" onChange={handleFileChange} />
-          <button className={styles["upload-button"]} onClick={handleUpload}>
-            Télécharger un fichier CSV
+        <div className={styles["csv-upload-section"]}>
+          <h3 className={styles["csv-upload-title"]}>Importer via CSV</h3>
+          <div className={styles["file-input-container"]}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              id="csv-upload"
+            />
+            <label htmlFor="csv-upload" className={styles["file-input-label"]}>
+              Choisir un fichier CSV
+            </label>
+          </div>
+          {fileName && (
+            <p className={styles["file-name"]}>
+              Fichier sélectionné: {fileName}
+            </p>
+          )}
+          <button
+            className={styles["upload-button"]}
+            onClick={handleUpload}
+            disabled={!file}
+          >
+            Télécharger le fichier CSV
           </button>
         </div>
 

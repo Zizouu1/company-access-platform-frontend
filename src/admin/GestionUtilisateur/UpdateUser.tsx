@@ -1,4 +1,4 @@
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Ajouter.module.css";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -79,13 +79,15 @@ export default function UpadteUser() {
   };
   return (
     <div className={styles["form-container"]}>
-      <Link
-        to="/GestionUtilisateurs"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/GestionUtilisateurs"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Modifier un utilisateur</h2>
         {message && <p className={styles["message"]}>{message}</p>}

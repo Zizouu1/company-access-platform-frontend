@@ -26,6 +26,24 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 1px;
 }
+.back-link {
+  background: #b40303;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.Line {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
 
 .logoutContainer {
   position: absolute;

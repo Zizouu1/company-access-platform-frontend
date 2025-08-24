@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Ajouter.module.css";
 
 interface Employee {
   id: string;
@@ -127,13 +127,15 @@ export default function UpdateDelay() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link
-        to="/modifierSupprimerRetard"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/modifierSupprimerRetard"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Modifier un retard</h2>
 

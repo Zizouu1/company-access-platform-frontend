@@ -1,0 +1,229 @@
+.Gestion-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.Gestion-title {
+  font-size: 2.5rem;
+  background: linear-gradient(to right, #ff6b6b, #ff3838);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.back-link {
+  background: #b40303;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.Line {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.back-link:hover {
+  filter: brightness(1.1);
+  background-color: rgb(61, 1, 1);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  padding: 25px;
+  justify-content: center;
+}
+
+.filters select,
+.filters input {
+  padding: 12px 16px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+  width: 250px;
+}
+.filters select:focus,
+.filters input:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.4);
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filters input::placeholder {
+  color: #ccc;
+}
+
+.add-button {
+  padding: 12px 25px;
+  background: linear-gradient(135deg, #ff4d4d, #e50914);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #e50914, #b00610);
+}
+
+.message {
+  text-align: center;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  background: rgba(161, 156, 156, 0.3);
+}
+
+.Gestion-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.Gestion-table thead {
+  background: #e50914;
+  color: white;
+  font-weight: 600;
+}
+
+.Gestion-table th,
+.Gestion-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+}
+
+.Gestion-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.Gestion-table tbody tr {
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.Gestion-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.01);
+}
+
+.Gestion-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.Gestion-table tbody tr:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.delete-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #ff4d4d, #e50914);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-right: 8px;
+}
+
+.delete-button:hover {
+  background: linear-gradient(135deg, #e50914, #b00610);
+}
+
+.edit-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #4d7fff, #143ce5);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.edit-button:hover {
+  background: linear-gradient(135deg, #143ce5, #061cb0);
+}
+
+@media (max-width: 768px) {
+  .Gestion-container {
+    padding: 20px 15px;
+  }
+
+  .Gestion-title {
+    font-size: 2rem;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+  }
+
+  .table-container {
+    padding: 15px;
+  }
+
+  .Gestion-table {
+    font-size: 12px;
+  }
+
+  .Gestion-table th,
+  .Gestion-table td {
+    padding: 10px;
+  }
+
+  .delete-button,
+  .edit-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

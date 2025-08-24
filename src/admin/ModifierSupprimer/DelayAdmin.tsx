@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Gestion.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
 interface Employee {
@@ -121,10 +121,10 @@ export default function DelayAdmin() {
       })
       .then(() => {
         setRetards((prevReards) =>
-          prevReards.filter((retard: Retard) => retard.employee?.id !== RId)
+          prevReards.filter((retard: Retard) => retard.id !== RId)
         );
         setFiltered((prevFiltered) =>
-          prevFiltered.filter((retard: Retard) => retard.employee?.id !== RId)
+          prevFiltered.filter((retard: Retard) => retard.id !== RId)
         );
       })
       .catch(() => {
@@ -135,15 +135,17 @@ export default function DelayAdmin() {
   };
 
   return (
-    <div className={styles["admin-container"]}>
-      <h2 className={styles["admin-title"]}>Liste des retards PEC</h2>
-      <Link
-        to="/ModifierSupprimer"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+    <div className={styles["Gestion-container"]}>
+      <h2 className={styles["Gestion-title"]}>Liste des retards PEC</h2>
+      <div className={styles["Line"]}>
+        <Link
+          to="/ModifierSupprimer"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input
@@ -189,7 +191,7 @@ export default function DelayAdmin() {
       </div>
 
       <div className={styles["table-container"]}>
-        <table className={styles["visitor-table"]}>
+        <table className={styles["Gestion-table"]}>
           <thead>
             <tr>
               <th>Date de retard</th>

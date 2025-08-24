@@ -10,7 +10,7 @@ export default function Retard() {
   const [form, setForm] = useState({
     dateR: "",
     time: "",
-    id: "",
+    employeeId: "",
     nom: "",
     prenom: "",
     site: "",
@@ -20,7 +20,7 @@ export default function Retard() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!form.id) {
+    if (!form.employeeId) {
       setForm((prev) => ({ ...prev, nom: "", prenom: "", site: "" }));
       return;
     }
@@ -28,7 +28,7 @@ export default function Retard() {
     const fetchEmployee = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/employees/${form.id}`,
+          `http://localhost:3000/employees/${form.employeeId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -48,12 +48,17 @@ export default function Retard() {
     };
 
     fetchEmployee();
-  }, [form.id, token]);
+  }, [form.employeeId, token]);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const formatTimeForBackend = (time: string) => {
+      if (time.length === 5) return `${time}:00`;
+      if (time.length === 4) return `0${time}:00`;
+      return time;
+    };
 
-    if (!form.id || !form.dateR || !form.time) {
+    if (!form.employeeId || !form.dateR || !form.time) {
       setMessage(
         "Veuillez remplir les champs obligatoires (Matricule, Date, Heure)."
       );
@@ -62,16 +67,15 @@ export default function Retard() {
 
     try {
       const payload = {
-        employee: { id: form.id },
+        employeeId: form.employeeId,
         dateR: form.dateR,
-        time: form.time,
+        time: formatTimeForBackend(form.time),
         service: form.service,
       };
 
       await axios.post("http://localhost:3000/delay-pec", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          role: "security",
         },
       });
 
@@ -79,14 +83,15 @@ export default function Retard() {
       setForm({
         dateR: "",
         time: "",
-        id: "",
+        employeeId: "",
         nom: "",
         prenom: "",
         site: "",
         service: "",
       });
-    } catch {
+    } catch (err) {
       setMessage("Erreur, veuillez réessayer");
+      console.error(err);
     }
   };
 
@@ -96,9 +101,11 @@ export default function Retard() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/security" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link to="/security" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Ajouter un retard</h2>
 
@@ -106,16 +113,37 @@ export default function Retard() {
 
         <form onSubmit={handleSubmit}>
           <div className={styles["input-group"]}>
+            <div className={styles["input-group"]}>
+              <label>Date de retard</label>
+              <input
+                type="date"
+                value={form.dateR}
+                onChange={(e) => setForm({ ...form, dateR: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className={styles["input-group"]}>
+              <label>Heure d'arrivée</label>
+              <input
+                type="time"
+                value={form.time}
+                onChange={(e) => setForm({ ...form, time: e.target.value })}
+                required
+              />
+            </div>
+
             <label>Matricule</label>
             <input
               type="text"
               placeholder="Matricule..."
-              value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value.trim() })}
+              value={form.employeeId}
+              onChange={(e) =>
+                setForm({ ...form, employeeId: e.target.value.trim() })
+              }
               required
             />
           </div>
-
           <div className={styles["input-group"]}>
             <label>Nom</label>
             <input
@@ -143,26 +171,6 @@ export default function Retard() {
               value={form.site}
               readOnly
               className={styles["readonly-input"]}
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Date de retard</label>
-            <input
-              type="date"
-              value={form.dateR}
-              onChange={(e) => setForm({ ...form, dateR: e.target.value })}
-              required
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Heure d'arrivée</label>
-            <input
-              type="time"
-              value={form.time}
-              onChange={(e) => setForm({ ...form, time: e.target.value })}
-              required
             />
           </div>
 

@@ -141,9 +141,11 @@ export default function RetardTable() {
   return (
     <div className={styles["hr-container"]}>
       <h2 className={styles["hr-title"]}>Liste des retards PEC</h2>
-      <Link to="/hr" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link to="/hr" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input
@@ -179,12 +181,12 @@ export default function RetardTable() {
           onChange={(e) => setSearchService(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />

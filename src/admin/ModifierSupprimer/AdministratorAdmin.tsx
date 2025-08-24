@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Gestion.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
 interface Employee {
@@ -116,10 +116,10 @@ export default function AdministrateurAdmin() {
       })
       .then(() => {
         setAdmins((prevAdmin) =>
-          prevAdmin.filter((admin: Admin) => admin.employee?.id !== adminId)
+          prevAdmin.filter((admin: Admin) => admin.id !== adminId)
         );
         setFiltered((prevFiltered) =>
-          prevFiltered.filter((admin: Admin) => admin.employee?.id !== adminId)
+          prevFiltered.filter((admin: Admin) => admin.id !== adminId)
         );
       })
       .catch(() => {
@@ -134,13 +134,15 @@ export default function AdministrateurAdmin() {
       <h2 className={styles["Gestion-title"]}>
         Liste des retards administrateurs
       </h2>
-      <Link
-        to="/ModifierSupprimer"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/ModifierSupprimer"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input
@@ -180,7 +182,7 @@ export default function AdministrateurAdmin() {
       </div>
 
       <div className={styles["table-container"]}>
-        <table className={styles["visitor-table"]}>
+        <table className={styles["Gestion-table"]}>
           <thead>
             <tr>
               <th>Date de retard</th>

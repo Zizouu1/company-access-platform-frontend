@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Ajouter.module.css";
 export default function UpdateVisitor() {
   const location = useLocation();
   const token = location.state?.token;
@@ -67,13 +67,15 @@ export default function UpdateVisitor() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link
-        to="/modifierSupprimerVisiteur"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/modifierSupprimerVisiteur"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Modifier un visiteur</h2>
 

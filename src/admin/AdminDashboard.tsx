@@ -1,5 +1,6 @@
 import Logout from "../login/Logout";
 import { useNavigate } from "react-router-dom";
+import styles from "./AdminDashboard.module.css";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -28,11 +29,34 @@ export default function AdminDashboard() {
     }
   };
   return (
-    <div>
-      <button onClick={UserM}>Gestion des utilisateurs</button>
-      <button onClick={EmployeeM}>Gestion des salaries</button>
-      <button onClick={UpdateDelete}>Modifier ou supprimer</button>
-      <Logout />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Tableau de bord Administrateur</h1>
+      </div>
+
+      <div className={styles.logoutContainer}>
+        <Logout />
+      </div>
+
+      <div className={styles.dashboard}>
+        <div className={styles.buttonRow}>
+          <button className={styles.button} onClick={UserM}>
+            <span className={styles.icon}>👥</span>
+            Gestion des utilisateurs
+          </button>
+          <button className={styles.button} onClick={EmployeeM}>
+            <span className={styles.icon}>👨‍💼</span>
+            Gestion des salaries
+          </button>
+        </div>
+
+        <div className={styles.buttonCenter}>
+          <button className={styles.button} onClick={UpdateDelete}>
+            <span className={styles.icon}>✏️</span>
+            Modifier ou supprimer
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

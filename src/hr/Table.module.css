@@ -1,89 +1,192 @@
 .hr-container {
+  min-height: 100vh;
   padding: 40px 20px;
-  max-width: 1000px;
+  max-width: 1400px;
   margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .hr-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e3a8a;
-  margin-bottom: 24px;
+  font-size: 2.5rem;
+  background: linear-gradient(to right, #ff6b6b, #ff3838);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding: 20px;
+  margin-bottom: 10px;
   text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.back-link {
+  background: #b40303;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.back-link:hover {
+  filter: brightness(1.1);
+  background-color: rgb(61, 1, 1);
+}
+
+.Line {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 15px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  padding: 25px;
   justify-content: center;
 }
 
 .filters select,
 .filters input {
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  border: 1px solid #444;
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+  width: 250px;
 }
-
 .filters select:focus,
 .filters input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: #e50914;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.4);
   outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filters input::placeholder {
+  color: #ccc;
+}
+
+.export-button {
+  padding: 12px 25px;
+  background: linear-gradient(135deg, #ff4d4d, #e50914);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.export-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #e50914, #b00610);
+}
+
+.message {
+  text-align: center;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ff6b6b;
+  font-weight: bold;
 }
 
 .table-container {
   overflow-x: auto;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+  background: rgba(196, 190, 190, 0.3);
 }
 
 .visitor-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
 .visitor-table thead {
-  background-color: #eff6ff;
-  color: #1e3a8a;
+  background: #e50914;
+  color: white;
   font-weight: 600;
 }
 
 .visitor-table th,
 .visitor-table td {
-  padding: 12px 16px;
+  padding: 16px;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 14px;
+}
+
+.visitor-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.visitor-table tbody tr {
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
 }
 
 .visitor-table tbody tr:hover {
-  background-color: #f0f9ff;
-}
-.visitor-table button {
-  padding: 6px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: all 0.3s;
-  cursor: pointer;
-  background-color: #3b82f6;
-  color: white;
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.01);
 }
 
-.visitor-table button:hover {
-  background-color: #1e3a8a;
+.visitor-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.loading {
-  text-align: center;
-  font-size: 1.2rem;
-  padding: 2rem;
-  color: #555;
+.visitor-table tbody tr:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+@media (max-width: 768px) {
+  .hr-container {
+    padding: 20px 15px;
+  }
+
+  .hr-title {
+    font-size: 2rem;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .filters input {
+    width: 100%;
+  }
+
+  .table-container {
+    padding: 15px;
+  }
+
+  .visitor-table {
+    font-size: 12px;
+  }
+
+  .visitor-table th,
+  .visitor-table td {
+    padding: 10px;
+  }
 }

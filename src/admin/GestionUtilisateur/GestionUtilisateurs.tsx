@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Gestion.module.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
 export default function GestionUtilisateurs() {
@@ -112,10 +112,12 @@ export default function GestionUtilisateurs() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Gestion des utilisateurs</h2>
-      <Link to="/admin" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <h2 className={styles["Gestion-title"]}>Gestion des Utilisateurs</h2>
+      <div className={styles["Line"]}>
+        <Link to="/admin" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input

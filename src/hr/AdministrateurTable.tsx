@@ -133,9 +133,11 @@ export default function AdministrateurTable() {
   return (
     <div className={styles["hr-container"]}>
       <h2 className={styles["hr-title"]}>Liste des retards administrateurs</h2>
-      <Link to="/hr" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link to="/hr" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input
@@ -171,7 +173,7 @@ export default function AdministrateurTable() {
           onChange={(e) => setStartDate(e.target.value)}
         />
         <input
-          type="date"
+          type="datetime-local"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />

@@ -1,6 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import Logout from "../../login/Logout";
-
+import styles from "./ModifierSupprimer.module.css";
 export default function ModifierSupprimer() {
   const navigate = useNavigate();
 
@@ -35,12 +34,35 @@ export default function ModifierSupprimer() {
   };
 
   return (
-    <div>
-      <Link to="/admin">Retour</Link>
-      <button onClick={Visiteur}>Visiteur</button>
-      <button onClick={Administrateur}>Suivi Administrateur</button>
-      <button onClick={Retard}>Retard</button>
-      <Logout />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Modifier et Supprimer</h1>
+      </div>
+      <div className={styles["Line"]}>
+        <Link to="/admin" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
+
+      <div className={styles.dashboard}>
+        <div className={styles.buttonRow}>
+          <button className={styles.button} onClick={Visiteur}>
+            <span className={styles.icon}>👤</span>
+            Visiteur
+          </button>
+          <button className={styles.button} onClick={Administrateur}>
+            <span className={styles.icon}>🔐</span>
+            Suivi Administrateur
+          </button>
+        </div>
+
+        <div className={styles.buttonCenter}>
+          <button className={styles.button} onClick={Retard}>
+            <span className={styles.icon}>⏱️</span>
+            Retard
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -101,9 +101,11 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link to="/security" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link to="/security" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>
           Ajouter un retard d'administrateur

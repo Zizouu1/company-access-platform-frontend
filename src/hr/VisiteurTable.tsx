@@ -139,9 +139,11 @@ export default function VisitorTable() {
   return (
     <div className={styles["hr-container"]}>
       <h2 className={styles["hr-title"]}>Liste des visiteurs</h2>
-      <Link to="/hr" className={styles["back-link"]}>
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link to="/hr" className={styles["back-link"]}>
+          Retour
+        </Link>
+      </div>
 
       <div className={styles["filters"]}>
         <input

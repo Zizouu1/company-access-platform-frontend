@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "/src/admin/change.module.css";
+import styles from "/src/admin/Ajouter.module.css";
 export default function Administrateur() {
   const location = useLocation();
   const token = location.state?.token;
@@ -65,13 +65,15 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <Link
-        to="/GestionSalaries"
-        className={styles["back-link"]}
-        state={{ token }}
-      >
-        Retour
-      </Link>
+      <div className={styles["Line"]}>
+        <Link
+          to="/GestionSalaries"
+          className={styles["back-link"]}
+          state={{ token }}
+        >
+          Retour
+        </Link>
+      </div>
       <div className={styles["form-box"]}>
         <h2 className={styles["form-title"]}>Modifier un Salarie</h2>
 

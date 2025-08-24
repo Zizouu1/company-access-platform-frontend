@@ -28,43 +28,47 @@ export default function Login() {
 
       navigate(`/${data.role}`);
     } catch {
-      setMessage("Login failed");
+      setMessage("Identifiant ou mot de passe incorrect. Veuillez réessayer.");
     }
   };
 
   return (
-    <div className={styles["login-background"]}>
-      <div className={styles["login-box"]}>
-        <h2 className={styles["login-title"]}>Login</h2>
-        {message && <p className={styles["login-footer"]}>{message}</p>}
+    <div className={styles["page-container"]}>
+      <div className={styles["login-background"]}>
+        <div className={styles["login-box"]}>
+          <h2 className={styles["login-title"]}>Se connecter</h2>
+          {message && <p className={styles["login-footer"]}>{message}</p>}
 
-        <div className={styles["input-group"]}>
-          <label>Username</label>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className={styles["login-input"]}
-            required
-          />
+          <div className={styles["input-group"]}>
+            <input
+              type="text"
+              placeholder="Nom d'utilisateur"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className={styles["login-input"]}
+              required
+            />
+          </div>
+
+          <div className={styles["input-group"]}>
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles["login-input"]}
+              required
+            />
+          </div>
+
+          <button onClick={handleLogin} className={styles["login-button"]}>
+            Se connecter
+          </button>
         </div>
-
-        <div className={styles["input-group"]}>
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={styles["login-input"]}
-            required
-          />
-        </div>
-
-        <button onClick={handleLogin} className={styles["login-button"]}>
-          Login
-        </button>
+      </div>
+      <div className={styles["footer"]}>
+        <img src="./src/assets/Pec.png" alt="Pec.img" />
+        <p>© 2025 PEC - Tous droits reservés</p>
       </div>
     </div>
   );
