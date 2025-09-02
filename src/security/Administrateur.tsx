@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "./form.module.css";
 
 export default function Administrateur() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
 
   const [form, setForm] = useState({
     dateR: "",
@@ -101,15 +100,8 @@ export default function Administrateur() {
 
   return (
     <div className={styles["form-container"]}>
-      <div className={styles["Line"]}>
-        <Link to="/security" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>
-          Ajouter un retard d'administrateur
-        </h2>
+        <h2 className={styles["form-title"]}>Retard Administrateur</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleSubmit}>

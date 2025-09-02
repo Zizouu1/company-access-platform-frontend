@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "/src/admin/Gestion.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function GestionUtilisateurs() {
   const [users, setUsers] = useState([]);
@@ -12,8 +12,8 @@ export default function GestionUtilisateurs() {
   const [errorMessages, setErrorMessages] = useState<{ [id: string]: string }>(
     {}
   );
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,12 +112,7 @@ export default function GestionUtilisateurs() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Gestion des Utilisateurs</h2>
-      <div className={styles["Line"]}>
-        <Link to="/admin" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["Gestion-title"]}>Utilisateurs</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -144,7 +139,7 @@ export default function GestionUtilisateurs() {
       </div>
 
       <button className={styles["add-button"]} onClick={handleAddUser}>
-        Ajouter un utilisateur
+        Creation
       </button>
 
       <div className={styles["table-container"]}>
@@ -154,6 +149,7 @@ export default function GestionUtilisateurs() {
               <th>Matricule</th>
               <th>Nom</th>
               <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -162,21 +158,21 @@ export default function GestionUtilisateurs() {
                 <td>{r.id}</td>
                 <td>{r.username}</td>
                 <td>{r.role}</td>
-                <td>
-                  <button
-                    className={styles["delete-button"]}
-                    onClick={() => handleDelete(r.id)}
-                  >
-                    Supprimer
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={styles["edit-button"]}
-                    onClick={() => handleEdit(r.id)}
-                  >
-                    Modifier
-                  </button>
+                <td className={styles["actions"]}>
+                  <div className={styles["action-buttons"]}>
+                    <img
+                      className={styles["delete-button"]}
+                      onClick={() => handleDelete(r.id)}
+                      src="src/assets/delete.png"
+                      alt="delete.img"
+                    />
+                    <img
+                      className={styles["edit-button"]}
+                      onClick={() => handleEdit(r.id)}
+                      src="src/assets/edit.png"
+                      alt="edit.img"
+                    />
+                  </div>
                 </td>
                 <td>
                   {errorMessages[r.id] && (

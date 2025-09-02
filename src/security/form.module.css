@@ -4,10 +4,10 @@
   align-items: flex-start;
   min-height: calc(100vh - 80px);
   padding: 40px 20px;
-  background-image: url("src/assets/Pec-savoie.png");
-  background-size: 60%;
+  background-image: url("src/assets/back.png");
+  background-size: 90%;
   background-repeat: no-repeat;
-  background-position: top left;
+  background-position: top;
 }
 
 .form-box {
@@ -96,11 +96,11 @@
 .message {
   text-align: center;
   padding: 12px;
-  margin-bottom: 20px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.2);
   color: #358d39;
   font-weight: 700;
+  margin-top: 0px;
 }
 
 @keyframes fadeIn {

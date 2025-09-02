@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "/src/admin/Ajouter.module.css";
 export default function Administrateur() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const { id: employeeId } = useParams();
 
   const [form, setForm] = useState({
@@ -75,7 +75,7 @@ export default function Administrateur() {
         </Link>
       </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Modifier un Salarie</h2>
+        <h2 className={styles["form-title"]}>Modification Salarie</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleUpdate}>

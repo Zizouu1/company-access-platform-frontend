@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "/src/admin/Gestion.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Employee {
   id: string;
@@ -28,8 +28,8 @@ export default function AdministrateurAdmin() {
   const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
 
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -131,18 +131,7 @@ export default function AdministrateurAdmin() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>
-        Liste des retards administrateurs
-      </h2>
-      <div className={styles["Line"]}>
-        <Link
-          to="/ModifierSupprimer"
-          className={styles["back-link"]}
-          state={{ token }}
-        >
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["Gestion-title"]}>Retard Administrateurs</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -191,6 +180,7 @@ export default function AdministrateurAdmin() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -202,21 +192,21 @@ export default function AdministrateurAdmin() {
                 <td>{a.employee?.nom}</td>
                 <td>{a.employee?.prenom}</td>
                 <td>{a.employee?.site}</td>
-                <td>
-                  <button
-                    className={styles["delete-button"]}
-                    onClick={() => handleDelete(a.id)}
-                  >
-                    Supprimer
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={styles["edit-button"]}
-                    onClick={() => handleEdit(a.id)}
-                  >
-                    Modifier
-                  </button>
+                <td className={styles["actions"]}>
+                  <div className={styles["action-buttons"]}>
+                    <img
+                      className={styles["delete-button"]}
+                      onClick={() => handleDelete(a.id)}
+                      src="src/assets/delete.png"
+                      alt="delete.img"
+                    />
+                    <img
+                      className={styles["edit-button"]}
+                      onClick={() => handleEdit(a.id)}
+                      src="src/assets/edit.png"
+                      alt="edit.img"
+                    />
+                  </div>
                 </td>
                 <td>
                   {message && <p className={styles["message"]}>{message}</p>}

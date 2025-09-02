@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import styles from "/src/admin/Ajouter.module.css";
 export default function Administrateur() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
 
@@ -86,7 +86,7 @@ export default function Administrateur() {
       </div>
 
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un Salarie</h2>
+        <h2 className={styles["form-title"]}>Creation Salarie</h2>
         <div className={styles["csv-upload-section"]}>
           <h3 className={styles["csv-upload-title"]}>Importer via CSV</h3>
           <div className={styles["file-input-container"]}>
@@ -110,7 +110,7 @@ export default function Administrateur() {
             onClick={handleUpload}
             disabled={!file}
           >
-            Télécharger le fichier CSV
+            Importer
           </button>
         </div>
 
@@ -145,17 +145,12 @@ export default function Administrateur() {
           </div>
           <div className={styles["input-group"]}>
             <label>site</label>
-            <select
+            <input
+              type="text"
+              placeholder="site..."
               value={form.site}
               onChange={(e) => setForm({ ...form, site: e.target.value })}
-            >
-              <option value="" disabled>
-                — Sélectionner un site —
-              </option>
-              <option value="Pec">Pec</option>
-              <option value="Pec-ac">Pec-ac</option>
-              <option value="Pec-plus">Pec-plus</option>
-            </select>
+            />
           </div>
 
           <button className={styles["submit-button"]}>Submit</button>

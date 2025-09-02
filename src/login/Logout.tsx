@@ -1,19 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
 import styles from "./Logout.module.css";
 
 export default function Logout() {
-  const navigate = useNavigate();
-
   const handleLogout = () => {
     localStorage.removeItem("auth");
-    navigate("/");
   };
 
   return (
     <nav>
-      <button className={styles.logoutButton} onClick={handleLogout}>
-        Logout
-      </button>
+      <Link to="/" className={styles.logout} onClick={handleLogout}>
+        <LogOut className={styles.icon} />
+        Se déconnecter
+      </Link>
     </nav>
   );
 }

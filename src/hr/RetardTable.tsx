@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Table.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function RetardTable() {
   const [retards, setRetards] = useState([]);
@@ -10,12 +10,11 @@ export default function RetardTable() {
   const [searchPrenom, setSearchPrenom] = useState("");
   const [searchId, setSearchId] = useState("");
   const [searchSite, setSearchSite] = useState("");
-  const [searchService, setSearchService] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +30,6 @@ export default function RetardTable() {
       prenom: string;
       site: string;
     };
-    service: string;
     dateR: string;
     time: string;
   }
@@ -74,19 +72,11 @@ export default function RetardTable() {
       );
     }
     if (searchSite.trim() !== "") {
-      if (searchSite == "All") {
-        filteredList = retards;
-      } else {
-        filteredList = filteredList.filter((r: Retard) =>
-          r.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
-        );
-      }
-    }
-    if (searchService.trim() !== "") {
       filteredList = filteredList.filter((r: Retard) =>
-        r.service.toLowerCase().includes(searchService.toLowerCase())
+        r.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
       );
     }
+
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -102,23 +92,29 @@ export default function RetardTable() {
     searchPrenom,
     searchId,
     searchSite,
-    searchService,
     startDate,
     endDate,
     retards,
   ]);
 
+  const formatDate = (dateString: string) => {
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
   const handleExport = () => {
     if (filtered.length === 0) return;
 
     const csvData = filtered.map((r: Retard) => ({
-      "Date de retard": r.dateR,
-      "Heure d'arrivée": r.time,
-      Matricule: r.employee?.id,
-      Nom: r.employee?.nom,
-      Prénom: r.employee?.prenom,
-      Site: r.employee?.site,
-      Service: r.service,
+      "Date de retard": `'${formatDate(r.dateR)}`,
+      "Heure d'arrivée": `${r.time}`,
+      Matricule: `${r.employee?.id}`,
+      Nom: `${r.employee?.nom}`,
+      Prénom: `${r.employee?.prenom}`,
+      Site: `${r.employee?.site}`,
     }));
 
     const csvContent =
@@ -140,12 +136,7 @@ export default function RetardTable() {
 
   return (
     <div className={styles["hr-container"]}>
-      <h2 className={styles["hr-title"]}>Liste des retards PEC</h2>
-      <div className={styles["Line"]}>
-        <Link to="/hr" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["hr-title"]}>Retard Salaries</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -166,19 +157,10 @@ export default function RetardTable() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
-        <select onChange={(e) => setSearchSite(e.target.value)}>
-          <option value="all" selected>
-            all
-          </option>
-          <option value="Pec">Pec</option>
-          <option value="Pec-ac">Pec-ac</option>
-          <option value="Pec-plus">Pec-plus</option>
-        </select>
         <input
           type="text"
-          placeholder="Service"
-          value={searchService}
-          onChange={(e) => setSearchService(e.target.value)}
+          placeholder="Site"
+          onChange={(e) => setSearchSite(e.target.value)}
         />
         <input
           type="datetime-local"
@@ -193,7 +175,7 @@ export default function RetardTable() {
       </div>
 
       <button className={styles["export-button"]} onClick={handleExport}>
-        Exporter en CSV
+        Exporter
       </button>
       {message && <p className={styles["message"]}>{message}</p>}
 
@@ -207,7 +189,6 @@ export default function RetardTable() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>
-              <th>Service</th>
             </tr>
           </thead>
           <tbody>
@@ -219,7 +200,6 @@ export default function RetardTable() {
                 <td>{r.employee?.nom}</td>
                 <td>{r.employee?.prenom}</td>
                 <td>{r.employee?.site}</td>
-                <td>{r.service}</td>
               </tr>
             ))}
           </tbody>

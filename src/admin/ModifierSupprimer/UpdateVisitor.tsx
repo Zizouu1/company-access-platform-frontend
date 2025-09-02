@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "/src/admin/Ajouter.module.css";
 export default function UpdateVisitor() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const { id } = useParams();
 
   const [form, setForm] = useState({
@@ -77,7 +77,7 @@ export default function UpdateVisitor() {
         </Link>
       </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Modifier un visiteur</h2>
+        <h2 className={styles["form-title"]}>Corriger Visiteur</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleSubmit}>
@@ -135,7 +135,7 @@ export default function UpdateVisitor() {
             />
           </div>
           <div className={styles["input-group"]}>
-            <label>A qui le visite</label>
+            <label>Destinataire</label>
             <input
               type="text"
               placeholder="A qui le visite..."

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "/src/admin/Ajouter.module.css";
 
@@ -18,8 +18,8 @@ interface Admin {
 }
 
 export default function UpdateAdministrateur() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const { id } = useParams();
 
   const [form, setForm] = useState({
@@ -128,9 +128,7 @@ export default function UpdateAdministrateur() {
         </Link>
       </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>
-          Mettre à jour un retard d'administrateur
-        </h2>
+        <h2 className={styles["form-title"]}>Corriger Retard</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
 

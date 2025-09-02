@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Table.module.css";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function VisitorTable() {
   const [visitors, setVisitors] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [searchName, setSearchName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchId, setsearchId] = useState("");
@@ -14,8 +13,8 @@ export default function VisitorTable() {
   const [searchTypeV, setsearchTypeV] = useState("");
   const [searchAQui, setsearchAQui] = useState("");
   const [message, setMessage] = useState("");
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,11 +59,6 @@ export default function VisitorTable() {
   useEffect(() => {
     let filteredList = [...visitors];
 
-    if (searchName.trim() !== "") {
-      filteredList = filteredList.filter((v: Visitor) =>
-        v.fullname.toLowerCase().includes(searchName.toLowerCase())
-      );
-    }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((v: Visitor) =>
         v.id.toLowerCase().includes(searchId.toLowerCase())
@@ -98,7 +92,6 @@ export default function VisitorTable() {
 
     setFiltered(filteredList);
   }, [
-    searchName,
     startDate,
     endDate,
     searchId,
@@ -108,15 +101,24 @@ export default function VisitorTable() {
     visitors,
   ]);
 
+  const formatDate = (dateString: string) => {
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleExport = () => {
     const csvData = filtered.map((v: Visitor) => ({
-      "Date d'arrivée": v.dateA,
-      "Heure d'arrivée": v.time,
-      "Numéro carte d'identité": v.id,
-      "Nom et prénom": v.fullname,
-      "Matricule voiture": v.matriculeV,
-      "Type de visite": v.typeV,
-      "À qui le visite": v.aQui,
+      "Date d'arrivée": `${formatDate(v.dateA)}`,
+      "Heure d'arrivée": `${v.time}`,
+      "Numéro carte d'identité": `${v.id}`,
+      "Nom et prénom": `${v.fullname}`,
+      "Matricule voiture": `${v.matriculeV}`,
+      "Type de visite": `${v.typeV}`,
+      "À qui le visite": `${v.aQui}`,
     }));
 
     const csvContent =
@@ -138,20 +140,9 @@ export default function VisitorTable() {
 
   return (
     <div className={styles["hr-container"]}>
-      <h2 className={styles["hr-title"]}>Liste des visiteurs</h2>
-      <div className={styles["Line"]}>
-        <Link to="/hr" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["hr-title"]}>Visiteurs</h2>
 
       <div className={styles["filters"]}>
-        <input
-          type="text"
-          placeholder="Nom et prénom"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
         <input
           type="text"
           placeholder="Numèro carte d'identité"
@@ -182,13 +173,13 @@ export default function VisitorTable() {
         />
         <input
           type="text"
-          placeholder="A qui le visite"
+          placeholder="Destinataire"
           value={searchAQui}
           onChange={(e) => setsearchAQui(e.target.value)}
         />
       </div>
       <button className={styles["export-button"]} onClick={handleExport}>
-        Exporter en CSV
+        Exporter
       </button>
       {message && <p className={styles["message"]}>{message}</p>}
       <div className={styles["table-container"]}>
@@ -201,7 +192,7 @@ export default function VisitorTable() {
               <th>Nom et prénom</th>
               <th>Matricule voiture</th>
               <th>Type de visite</th>
-              <th>A qui le visite</th>
+              <th>Destinataire</th>
             </tr>
           </thead>
           <tbody>

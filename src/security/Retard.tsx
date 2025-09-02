@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "./form.module.css";
 
 export default function Retard() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
 
   const [form, setForm] = useState({
     dateR: "",
@@ -14,7 +13,6 @@ export default function Retard() {
     nom: "",
     prenom: "",
     site: "",
-    service: "",
   });
 
   const [message, setMessage] = useState("");
@@ -70,7 +68,6 @@ export default function Retard() {
         employeeId: form.employeeId,
         dateR: form.dateR,
         time: formatTimeForBackend(form.time),
-        service: form.service,
       };
 
       await axios.post("http://localhost:3000/delay-pec", payload, {
@@ -87,7 +84,6 @@ export default function Retard() {
         nom: "",
         prenom: "",
         site: "",
-        service: "",
       });
     } catch (err) {
       setMessage("Erreur, veuillez réessayer");
@@ -101,13 +97,8 @@ export default function Retard() {
 
   return (
     <div className={styles["form-container"]}>
-      <div className={styles["Line"]}>
-        <Link to="/security" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un retard</h2>
+        <h2 className={styles["form-title"]}>Retard Salarie</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
 
@@ -171,16 +162,6 @@ export default function Retard() {
               value={form.site}
               readOnly
               className={styles["readonly-input"]}
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Service</label>
-            <input
-              type="text"
-              placeholder="Service..."
-              value={form.service}
-              onChange={(e) => setForm({ ...form, service: e.target.value })}
             />
           </div>
 

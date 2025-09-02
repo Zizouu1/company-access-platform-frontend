@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Table.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AdministrateurTable() {
   const [admins, setAdmins] = useState([]);
@@ -14,8 +14,8 @@ export default function AdministrateurTable() {
   const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
 
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function AdministrateurTable() {
         a.employee?.id.toLowerCase().includes(searchId.toLowerCase())
       );
     }
-    if (searchSite.trim() !== "" && searchSite !== "all") {
+    if (searchSite.trim() !== "") {
       filteredList = filteredList.filter((a: Admin) =>
         a.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
       );
@@ -101,16 +101,25 @@ export default function AdministrateurTable() {
     admins,
   ]);
 
+  const formatDate = (dateString: string) => {
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleExport = () => {
     if (filtered.length === 0) return;
 
     const csvData = filtered.map((a: Admin) => ({
-      "Date de retard": a.dateR,
-      "Heure d'arrivée": a.time,
-      Matricule: a.employee?.id,
-      Nom: a.employee?.nom,
-      Prénom: a.employee?.prenom,
-      Site: a.employee?.site,
+      "Date de retard": `'${formatDate(a.dateR)}`,
+      "Heure d'arrivée": `${a.time}`,
+      Matricule: `${a.employee?.id}`,
+      Nom: `${a.employee?.nom}`,
+      Prénom: `${a.employee?.prenom}`,
+      Site: `${a.employee?.site}`,
     }));
 
     const csvContent =
@@ -132,12 +141,7 @@ export default function AdministrateurTable() {
 
   return (
     <div className={styles["hr-container"]}>
-      <h2 className={styles["hr-title"]}>Liste des retards administrateurs</h2>
-      <div className={styles["Line"]}>
-        <Link to="/hr" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["hr-title"]}>Retard Administrateurs</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -158,15 +162,12 @@ export default function AdministrateurTable() {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
-        <select
+        <input
+          type="text"
+          placeholder="Site"
           value={searchSite}
           onChange={(e) => setSearchSite(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="Pec">Pec</option>
-          <option value="Pec-ac">Pec-ac</option>
-          <option value="Pec-plus">Pec-plus</option>
-        </select>
+        />
         <input
           type="datetime-local"
           value={startDate}
@@ -180,7 +181,7 @@ export default function AdministrateurTable() {
       </div>
 
       <button className={styles["export-button"]} onClick={handleExport}>
-        Exporter en CSV
+        Exporter
       </button>
       {message && <p className={styles["message"]}>{message}</p>}
 

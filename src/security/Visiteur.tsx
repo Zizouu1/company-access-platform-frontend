@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "./form.module.css";
-
 export default function Visiteur() {
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
 
   const [form, setForm] = useState({
     dateA: "",
@@ -50,14 +48,8 @@ export default function Visiteur() {
 
   return (
     <div className={styles["form-container"]}>
-      <div className={styles["Line"]}>
-        <Link to="/security" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
-
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un visiteur</h2>
+        <h2 className={styles["form-title"]}>Visiteur</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleSubmit}>
@@ -115,10 +107,10 @@ export default function Visiteur() {
             />
           </div>
           <div className={styles["input-group"]}>
-            <label>A qui le visite</label>
+            <label>Destinataire</label>
             <input
               type="text"
-              placeholder="A qui le visite..."
+              placeholder="Destinataire..."
               value={form.aQui}
               onChange={(e) => setForm({ ...form, aQui: e.target.value })}
             />

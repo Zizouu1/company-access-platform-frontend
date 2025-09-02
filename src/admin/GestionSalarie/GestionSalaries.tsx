@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "/src/admin/Gestion.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function GestionSalaries() {
   const [salaries, setSalaries] = useState([]);
@@ -10,9 +10,9 @@ export default function GestionSalaries() {
   const [searchNom, setSearchNom] = useState("");
   const [searchPrenom, setSearchPrenom] = useState("");
   const [searchSite, setSearchSite] = useState("");
-  const [message, setMessage] = useState("");
-  const location = useLocation();
-  const token = location.state?.token;
+  const [message, setErrorMessages] = useState<{ [id: string]: string }>({});
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +40,10 @@ export default function GestionSalaries() {
         setSalaries(res.data);
         setFiltered(res.data);
       } catch {
-        setMessage("Erreur lors de la récupération des salaries.");
+        setErrorMessages((prev) => ({
+          ...prev,
+          fetch: "Erreur lors de la récupération des utilisateurs.",
+        }));
       }
     };
 
@@ -66,13 +69,9 @@ export default function GestionSalaries() {
       );
     }
     if (searchSite.trim() !== "") {
-      if (searchSite === "") {
-        filteredList = salaries;
-      } else {
-        filteredList = filteredList.filter((a: Salarie) =>
-          a.site.toLowerCase().includes(searchSite.toLowerCase())
-        );
-      }
+      filteredList = filteredList.filter((a: Salarie) =>
+        a.site.toLowerCase().includes(searchSite.toLowerCase())
+      );
     }
 
     setFiltered(filteredList);
@@ -98,22 +97,24 @@ export default function GestionSalaries() {
         setFiltered((prevFiltered) =>
           prevFiltered.filter((salarie: Salarie) => salarie.id !== id)
         );
+        setErrorMessages((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[id];
+          return newErrors;
+        });
       })
-      .catch(() => {
-        setMessage(
-          "Erreur lors de la suppression de le salarie. Veuillez réessayer."
-        );
+      .catch((error) => {
+        setErrorMessages((prev) => ({
+          ...prev,
+          [id]: "Erreur lors de la suppression. Veuillez réessayer.",
+        }));
+        console.log(error);
       });
   };
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Gestion des Salaries</h2>
-      <div className={styles["Line"]}>
-        <Link to="/admin" className={styles["back-link"]}>
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["Gestion-title"]}>Salaries</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -134,19 +135,16 @@ export default function GestionSalaries() {
           value={searchPrenom}
           onChange={(e) => setSearchPrenom(e.target.value)}
         />
-        <select
+        <input
+          type="text"
+          placeholder="Site"
           value={searchSite}
           onChange={(e) => setSearchSite(e.target.value)}
-        >
-          <option value="">all</option>
-          <option value="Pec">Pec</option>
-          <option value="Pec-ac">Pec-ac</option>
-          <option value="Pec-plus">Pec-plus</option>
-        </select>
+        />
       </div>
 
       <button className={styles["add-button"]} onClick={handleAddUser}>
-        Ajouter un salarie
+        Creation
       </button>
 
       <div className={styles["table-container"]}>
@@ -157,6 +155,7 @@ export default function GestionSalaries() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -166,24 +165,26 @@ export default function GestionSalaries() {
                 <td>{r.nom}</td>
                 <td>{r.prenom}</td>
                 <td>{r.site}</td>
-                <td>
-                  <button
-                    className={styles["delete-button"]}
-                    onClick={() => handleDelete(r.id)}
-                  >
-                    Supprimer
-                  </button>
+                <td className={styles["actions"]}>
+                  <div className={styles["action-buttons"]}>
+                    <img
+                      className={styles["delete-button"]}
+                      onClick={() => handleDelete(r.id)}
+                      src="src/assets/delete.png"
+                      alt="delete.img"
+                    />
+                    <img
+                      className={styles["edit-button"]}
+                      onClick={() => handleEdit(r.id)}
+                      src="src/assets/edit.png"
+                      alt="edit.img"
+                    />
+                  </div>
                 </td>
                 <td>
-                  <button
-                    className={styles["edit-button"]}
-                    onClick={() => handleEdit(r.id)}
-                  >
-                    Modifier
-                  </button>
-                </td>
-                <td>
-                  {message && <p className={styles["message"]}>{message}</p>}
+                  {message[r.id] && (
+                    <p className={styles["message"]}>{message[r.id]}</p>
+                  )}
                 </td>
               </tr>
             ))}

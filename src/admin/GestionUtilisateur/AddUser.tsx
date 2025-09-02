@@ -1,11 +1,11 @@
 import styles from "/src/admin/Ajouter.module.css";
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 export default function AddUser() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
 
   useEffect(() => {
     if (!token) {
@@ -61,7 +61,7 @@ export default function AddUser() {
         </Link>
       </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Ajouter un utilisateur</h2>
+        <h2 className={styles["form-title"]}>Creation User</h2>
         {message && <p className={styles["message"]}>{message}</p>}
         <form onSubmit={handleAdd}>
           <div className={styles["input-group"]}>

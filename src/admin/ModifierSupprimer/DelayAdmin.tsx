@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "/src/admin/Gestion.module.css";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Employee {
   id: string;
@@ -14,7 +14,6 @@ interface Retard {
   id: string;
   dateR: string;
   time: string;
-  service: string;
   employee: Employee;
 }
 
@@ -25,13 +24,12 @@ export default function DelayAdmin() {
   const [searchPrenom, setSearchPrenom] = useState("");
   const [searchId, setSearchId] = useState("");
   const [searchSite, setSearchSite] = useState("");
-  const [searchService, setSearchService] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
 
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,11 +80,6 @@ export default function DelayAdmin() {
         r.employee?.site.toLowerCase().includes(searchSite.toLowerCase())
       );
     }
-    if (searchService.trim() !== "") {
-      filteredList = filteredList.filter((r: Retard) =>
-        r.service.toLowerCase().includes(searchService.toLowerCase())
-      );
-    }
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -102,7 +95,6 @@ export default function DelayAdmin() {
     searchPrenom,
     searchId,
     searchSite,
-    searchService,
     startDate,
     endDate,
     retards,
@@ -136,16 +128,7 @@ export default function DelayAdmin() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Liste des retards PEC</h2>
-      <div className={styles["Line"]}>
-        <Link
-          to="/ModifierSupprimer"
-          className={styles["back-link"]}
-          state={{ token }}
-        >
-          Retour
-        </Link>
-      </div>
+      <h2 className={styles["Gestion-title"]}>Retard Salaries</h2>
 
       <div className={styles["filters"]}>
         <input
@@ -173,12 +156,6 @@ export default function DelayAdmin() {
           onChange={(e) => setSearchSite(e.target.value)}
         />
         <input
-          type="text"
-          placeholder="Service"
-          value={searchService}
-          onChange={(e) => setSearchService(e.target.value)}
-        />
-        <input
           type="datetime-local"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
@@ -200,7 +177,7 @@ export default function DelayAdmin() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Site</th>
-              <th>Service</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -212,22 +189,21 @@ export default function DelayAdmin() {
                 <td>{r.employee?.nom}</td>
                 <td>{r.employee?.prenom}</td>
                 <td>{r.employee?.site}</td>
-                <td>{r.service}</td>
-                <td>
-                  <button
-                    className={styles["delete-button"]}
-                    onClick={() => handleDelete(r.id)}
-                  >
-                    Supprimer
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={styles["edit-button"]}
-                    onClick={() => handleEdit(r.id)}
-                  >
-                    Modifier
-                  </button>
+                <td className={styles["actions"]}>
+                  <div className={styles["action-buttons"]}>
+                    <img
+                      className={styles["delete-button"]}
+                      onClick={() => handleDelete(r.id)}
+                      src="src/assets/delete.png"
+                      alt="delete.img"
+                    />
+                    <img
+                      className={styles["edit-button"]}
+                      onClick={() => handleEdit(r.id)}
+                      src="src/assets/edit.png"
+                      alt="edit.img"
+                    />
+                  </div>
                 </td>
                 <td>
                   {message && <p className={styles["message"]}>{message}</p>}

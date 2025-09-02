@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "/src/admin/Gestion.module.css";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function VisitorAdmin() {
   const [visitors, setVisitors] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [searchName, setSearchName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchId, setsearchId] = useState("");
@@ -15,8 +14,8 @@ export default function VisitorAdmin() {
   const [searchAQui, setsearchAQui] = useState("");
   const [message, setMessage] = useState("");
 
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,11 +60,6 @@ export default function VisitorAdmin() {
   useEffect(() => {
     let filteredList = [...visitors];
 
-    if (searchName.trim() !== "") {
-      filteredList = filteredList.filter((v: Visitor) =>
-        v.fullname.toLowerCase().includes(searchName.toLowerCase())
-      );
-    }
     if (searchId.trim() !== "") {
       filteredList = filteredList.filter((v: Visitor) =>
         v.id.toLowerCase().includes(searchId.toLowerCase())
@@ -99,7 +93,6 @@ export default function VisitorAdmin() {
 
     setFiltered(filteredList);
   }, [
-    searchName,
     startDate,
     endDate,
     searchId,
@@ -137,39 +130,13 @@ export default function VisitorAdmin() {
 
   return (
     <div className={styles["Gestion-container"]}>
-      <h2 className={styles["Gestion-title"]}>Liste des visiteurs</h2>
-      <div className={styles["Line"]}>
-        <Link
-          to="/ModifierSupprimer"
-          className={styles["back-link"]}
-          state={{ token }}
-        >
-          Retour
-        </Link>
-      </div>
-
+      <h2 className={styles["Gestion-title"]}>Visiteurs</h2>
       <div className={styles["filters"]}>
-        <input
-          type="text"
-          placeholder="Nom et prénom"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
         <input
           type="text"
           placeholder="Numèro carte d'identité"
           value={searchId}
           onChange={(e) => setsearchId(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
         />
         <input
           type="text"
@@ -185,9 +152,19 @@ export default function VisitorAdmin() {
         />
         <input
           type="text"
-          placeholder="A qui le visite"
+          placeholder="Destinataire"
           value={searchAQui}
           onChange={(e) => setsearchAQui(e.target.value)}
+        />
+        <input
+          type="datetime-local"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <input
+          type="datetime-local"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
       <div className={styles["table-container"]}>
@@ -200,7 +177,8 @@ export default function VisitorAdmin() {
               <th>Nom et prénom</th>
               <th>Matricule voiture</th>
               <th>Type de visite</th>
-              <th>A qui le visite</th>
+              <th>Destinataire</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -213,22 +191,23 @@ export default function VisitorAdmin() {
                 <td>{v.matriculeV}</td>
                 <td>{v.typeV}</td>
                 <td>{v.aQui}</td>
-                <td>
-                  <button
-                    className={styles["delete-button"]}
-                    onClick={() => handleDelete(v.id)}
-                  >
-                    Supprimer
-                  </button>
+                <td className={styles["actions"]}>
+                  <div className={styles["action-buttons"]}>
+                    <img
+                      className={styles["delete-button"]}
+                      onClick={() => handleDelete(v.id)}
+                      src="src/assets/delete.png"
+                      alt="delete.img"
+                    />
+                    <img
+                      className={styles["edit-button"]}
+                      onClick={() => handleEdit(v.id)}
+                      src="src/assets/edit.png"
+                      alt="edit.img"
+                    />
+                  </div>
                 </td>
-                <td>
-                  <button
-                    className={styles["edit-button"]}
-                    onClick={() => handleEdit(v.id)}
-                  >
-                    Modifier
-                  </button>
-                </td>
+
                 <td>
                   {message && <p className={styles["message"]}>{message}</p>}
                 </td>

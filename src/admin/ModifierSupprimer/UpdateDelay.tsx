@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "/src/admin/Ajouter.module.css";
 
@@ -14,14 +14,13 @@ interface Retard {
   id: string;
   dateR: string;
   time: string;
-  service: string;
   employee: Employee;
 }
 
 export default function UpdateDelay() {
   const { id } = useParams();
-  const location = useLocation();
-  const token = location.state?.token;
+  const authData = localStorage.getItem("auth");
+  const token = authData ? JSON.parse(authData).token : null;
 
   const [form, setForm] = useState({
     dateR: "",
@@ -30,7 +29,6 @@ export default function UpdateDelay() {
     nom: "",
     prenom: "",
     site: "",
-    service: "",
   });
 
   const [message, setMessage] = useState("");
@@ -50,7 +48,6 @@ export default function UpdateDelay() {
         setForm({
           dateR: retard.dateR,
           time: retard.time,
-          service: retard.service,
           employeeId: retard.employee.id,
           nom: retard.employee.nom,
           prenom: retard.employee.prenom,
@@ -109,7 +106,6 @@ export default function UpdateDelay() {
         dateR: form.dateR,
         time: form.time,
         employeeId: form.employeeId,
-        service: form.service,
       };
       await axios.patch(`http://localhost:3000/delay-pec/${id}`, payload, {
         headers: { Authorization: `Bearer ${token}`, role: "admin" },
@@ -137,7 +133,7 @@ export default function UpdateDelay() {
         </Link>
       </div>
       <div className={styles["form-box"]}>
-        <h2 className={styles["form-title"]}>Modifier un retard</h2>
+        <h2 className={styles["form-title"]}>Corriger Retard</h2>
 
         {message && <p className={styles["message"]}>{message}</p>}
 
@@ -194,15 +190,6 @@ export default function UpdateDelay() {
               value={form.site}
               readOnly
               className={styles["readonly-input"]}
-            />
-          </div>
-
-          <div className={styles["input-group"]}>
-            <label>Service</label>
-            <input
-              type="text"
-              value={form.service}
-              onChange={(e) => setForm({ ...form, service: e.target.value })}
             />
           </div>
 
